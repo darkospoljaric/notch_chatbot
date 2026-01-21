@@ -8,6 +8,7 @@ This guide explains how to deploy the Notch Chatbot to Streamlit Cloud.
 - GitHub account
 - Streamlit Cloud account (free at [share.streamlit.io](https://share.streamlit.io))
 - OpenAI API key
+- SendGrid API key (optional - for automated proposal sending)
 
 ### Step 1: Push to GitHub
 
@@ -31,7 +32,11 @@ git push -u origin main
 5. Click "Advanced settings"
 6. Add your secrets:
    ```toml
+   # Required
    OPENAI_API_KEY = "your-openai-api-key-here"
+
+   # Optional - for automated PDF proposal generation and email sending
+   SENDGRID_API_KEY = "your-sendgrid-api-key-here"
    ```
 7. Click "Deploy"
 
@@ -57,12 +62,17 @@ The app will open in your browser at `http://localhost:8501`
 
 Create `.streamlit/secrets.toml`:
 ```toml
+# Required
 OPENAI_API_KEY = "your-openai-api-key-here"
+
+# Optional - for automated PDF proposals
+SENDGRID_API_KEY = "your-sendgrid-api-key-here"
 ```
 
 Or use `.env` file (already supported):
 ```bash
 OPENAI_API_KEY=your-openai-api-key-here
+SENDGRID_API_KEY=your-sendgrid-api-key-here  # optional
 ```
 
 ### For Streamlit Cloud
@@ -71,7 +81,13 @@ OPENAI_API_KEY=your-openai-api-key-here
 2. Click "Settings" → "Secrets"
 3. Add your secrets in TOML format:
    ```toml
+   # Required
    OPENAI_API_KEY = "your-openai-api-key-here"
+
+   # Optional - enables automated PDF proposal generation and email sending
+   # Get free API key at: https://sendgrid.com (free tier: 100 emails/day)
+   # See EMAIL_SETUP.md for detailed setup instructions
+   SENDGRID_API_KEY = "your-sendgrid-api-key-here"
    ```
 4. Click "Save"
 
@@ -130,6 +146,35 @@ Edit `streamlit_app.py` to customize:
 - Verify `requirements.txt` includes all necessary dependencies
 - Check that the package structure matches what's in the repository
 
+### Email proposals not working
+- Ensure `SENDGRID_API_KEY` is set in secrets (optional feature)
+- Verify sender email `proposals@wearenotch.com` is verified in SendGrid
+- Check app logs for SendGrid API errors
+- Without SendGrid configured, bot will work normally but cannot send proposals
+
+## 📧 Email Proposal Feature (Optional)
+
+The chatbot can automatically generate and send professional PDF proposals to prospects:
+
+### Setup Requirements
+1. **SendGrid API Key**: Get free account at [sendgrid.com](https://sendgrid.com)
+2. **Verify Sender Email**: Must verify `proposals@wearenotch.com` in SendGrid dashboard
+3. **Add to Secrets**: Add `SENDGRID_API_KEY` to Streamlit Cloud secrets
+
+### How It Works
+- Bot collects prospect name and email during conversation
+- Creates professional PDF with project details, pricing, team info
+- Automatically sends via email with PDF attachment
+- **Auto BCC**: Copies sent to `darko.spoljaric@wearenotch.com` and `sanja.buterin@wearenotch.com`
+
+### Without SendGrid
+If not configured, the chatbot:
+- Still works fully for conversations
+- Cannot send proposals via email
+- Will direct prospects to website or contact info
+
+See [EMAIL_SETUP.md](EMAIL_SETUP.md) for detailed setup instructions.
+
 ## 📊 Monitoring
 
 Streamlit Cloud provides:
@@ -162,6 +207,12 @@ git push
 - GPT-4: ~$0.03 per 1K tokens (input) + $0.06 per 1K tokens (output)
 - Average conversation: ~$0.02-0.10 depending on length
 - Recommend setting usage limits in OpenAI dashboard
+
+### SendGrid (Free Tier) - Optional
+- Email sending: **Free** up to 100 emails/day
+- No credit card required for free tier
+- Perfect for automated proposal sending
+- See [EMAIL_SETUP.md](EMAIL_SETUP.md) for setup instructions
 
 ## 🔐 Security Best Practices
 
