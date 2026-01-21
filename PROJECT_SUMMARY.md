@@ -301,13 +301,35 @@ See `DEPLOYMENT.md` for detailed instructions.
 
 ## 🧪 Testing
 
-Test scripts included:
+Organized test suite in `tests/` directory:
+
+**Unit Tests** (`tests/unit/`):
+- `verify_kb.py` - Knowledge base validation
+- `test_streamlit_imports.py` - Import checks
+
+**Integration Tests** (`tests/integration/`):
 - `test_agent.py` - Basic agent functionality
 - `test_streaming.py` - Token streaming
 - `test_memory.py` - Conversation memory
 - `test_concise.py` - Response brevity
 - `test_tools.py` - Tool calling
-- `verify_kb.py` - Knowledge base validation
+
+**Demo Tests** (`tests/demo/`):
+- `test_full_demo.py` - Complete feature demonstration
+- `test_memory_simple.py` - Simple memory examples
+- `test_detailed.py` - Brief vs detailed responses
+
+Run tests:
+```bash
+./run_tests.sh              # All tests
+./run_tests.sh unit        # Unit tests only
+uv run python tests/unit/verify_kb.py  # Individual test
+```
+
+All tests use clean imports:
+```python
+from notch_chatbot.agent import create_notch_agent
+```
 
 ## 🎯 Success Metrics
 

@@ -96,6 +96,9 @@ notch-chatbot/
 │   ├── integration/           # Integration tests
 │   ├── demo/                  # Demo tests
 │   └── README.md              # Test documentation
+├── examples/                  # Usage examples
+│   ├── simple_usage.py        # Basic usage example
+│   └── README.md              # Examples documentation
 ├── .streamlit/
 │   ├── config.toml            # Streamlit configuration
 │   └── secrets.toml.example   # Example secrets file
@@ -117,6 +120,25 @@ The chatbot's knowledge is stored in JSON files in the `data/` directory:
 - **expertise.json**: Descriptions of technical expertise domains
 
 To update the knowledge base, edit the JSON files. Changes take effect on next startup.
+
+## Programmatic Usage
+
+For using the chatbot in your own code, see the `examples/` directory:
+
+```python
+from notch_chatbot.agent import create_notch_agent
+from notch_chatbot.knowledge_base import load_knowledge_base
+
+# Load knowledge base and create agent
+kb = load_knowledge_base()
+agent = create_notch_agent(kb)
+
+# Use the agent
+result = agent.run_sync("What services do you offer?", deps=kb)
+print(result.output)
+```
+
+See [examples/README.md](examples/README.md) for more examples and patterns.
 
 ## Development
 
@@ -196,6 +218,14 @@ uv run python tests/integration/test_agent.py
 # See full demo
 uv run python tests/demo/test_full_demo.py
 ```
+
+**Import Pattern**: Tests use clean imports from the installed package:
+```python
+from notch_chatbot.agent import create_notch_agent
+from notch_chatbot.knowledge_base import load_knowledge_base
+```
+
+No `sys.path` manipulation needed - the package is installed via `uv sync`!
 
 See [tests/README.md](tests/README.md) for detailed testing documentation.
 

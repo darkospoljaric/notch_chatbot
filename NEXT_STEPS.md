@@ -140,18 +140,25 @@ textColor = "#262730"
 Run the test suite:
 
 ```bash
-# Verify knowledge base
-uv run python verify_kb.py
+# Quick validation
+./run_tests.sh unit
 
-# Test agent responses
-uv run python test_agent.py
+# Or run specific tests
+uv run python tests/unit/verify_kb.py
+uv run python tests/integration/test_agent.py
+uv run python tests/integration/test_memory.py
 
-# Test conversation memory
-uv run python test_memory.py
-
-# Test concise responses
-uv run python test_concise.py
+# Run all tests
+./run_tests.sh
 ```
+
+**Note**: Tests import directly from the installed package:
+```python
+from notch_chatbot.agent import create_notch_agent
+from notch_chatbot.knowledge_base import load_knowledge_base
+```
+
+No path manipulation needed - the package is installed via `uv sync`!
 
 ## 📊 Monitor Usage
 
