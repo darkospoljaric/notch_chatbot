@@ -1,7 +1,9 @@
 """Streamlit UI for Notch Chatbot."""
 
 import asyncio
+import logging
 import os
+import sys
 
 import streamlit as st
 from dotenv import load_dotenv
@@ -9,8 +11,17 @@ from dotenv import load_dotenv
 from src.notch_chatbot.agent import create_notch_agent
 from src.notch_chatbot.knowledge_base import load_knowledge_base
 
+# Configure logging to show in terminal
+logging.basicConfig(
+    level=logging.INFO,
+    format="%(asctime)s - %(name)s - %(levelname)s - %(message)s",
+    handlers=[logging.StreamHandler(sys.stdout)],
+)
+logger = logging.getLogger(__name__)
+
 # Load environment variables
 load_dotenv()
+logger.info("Application starting...")
 
 # Page config
 st.set_page_config(
@@ -52,8 +63,16 @@ st.markdown(
 @st.cache_resource
 def load_chatbot():
     """Load knowledge base and create agent (cached)."""
+    logger.info("Loading knowledge base from data/ directory...")
     kb = load_knowledge_base()
+    logger.info(
+        f"Knowledge base loaded: {len(kb.services)} services, {len(kb.case_studies)} case studies"
+    )
+
+    logger.info("Creating Notch agent...")
     agent = create_notch_agent(kb)
+    logger.info("Agent created successfully")
+
     return agent, kb
 
 
@@ -96,6 +115,7 @@ def main():
     # Check for API key
     api_key = get_api_key()
     if not api_key:
+        logger.error("OpenAI API key not found")
         st.error(
             "⚠️ OpenAI API key not found. Please set the `OPENAI_API_KEY` "
             "environment variable or add it to Streamlit secrets."
@@ -106,14 +126,28 @@ def main():
         )
         st.stop()
 
+    logger.info("OpenAI API key found")
+
     # Set API key in environment for the agent
     os.environ["OPENAI_API_KEY"] = api_key
 
+    # Check for SendGrid API key (optional)
+    sendgrid_key = os.getenv("SENDGRID_API_KEY")
+    if sendgrid_key:
+        logger.info("SendGrid API key found - email proposals enabled")
+    else:
+        logger.warning(
+            "SendGrid API key not found - email proposals disabled (this is optional)"
+        )
+
     # Load agent and knowledge base
     try:
+        logger.info("Loading knowledge base and agent...")
         with st.spinner("Loading Notch knowledge base..."):
             agent, kb = load_chatbot()
+        logger.info("Chatbot loaded successfully")
     except Exception as e:
+        logger.exception(f"Failed to load chatbot: {e}")
         st.error(f"Failed to load chatbot: {str(e)}")
         st.stop()
 
@@ -129,6 +163,8 @@ def main():
 
     # Chat input
     if prompt := st.chat_input("Ask about Notch's services, case studies, or capabilities..."):
+        logger.info(f"User message received: {prompt[:100]}...")  # Log first 100 chars
+
         # Add user message to chat history
         st.session_state.messages.append({"role": "user", "content": prompt})
 
@@ -143,6 +179,8 @@ def main():
 
             # Stream the response
             try:
+                logger.info("Starting agent response stream...")
+
                 # Create async generator and run it
                 async def collect_response():
                     response_text = ""
@@ -156,6 +194,9 @@ def main():
 
                 # Run async function and get final response
                 full_response = asyncio.run(collect_response())
+                logger.info(
+                    f"Agent response complete ({len(full_response)} chars): {full_response[:100]}..."
+                )
 
                 # Add assistant response to chat history
                 st.session_state.messages.append(
@@ -163,6 +204,7 @@ def main():
                 )
 
             except Exception as e:
+                logger.exception(f"Error generating response: {e}")
                 st.error(f"Error generating response: {str(e)}")
 
     # Sidebar with info

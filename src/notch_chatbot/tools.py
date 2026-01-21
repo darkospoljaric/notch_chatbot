@@ -1,6 +1,7 @@
 """Tools for the Notch chatbot agent."""
 
 import base64
+import logging
 import os
 from datetime import datetime
 from io import BytesIO
@@ -10,6 +11,9 @@ from fpdf import FPDF
 from pydantic_ai import RunContext
 
 from .models import CaseStudy, Industry, KnowledgeBase, Service, UseCase
+
+# Configure logging
+logger = logging.getLogger(__name__)
 
 
 def find_services_by_keyword(
@@ -261,8 +265,13 @@ async def create_and_send_offer(
     Returns:
         Success or error message
     """
+    logger.info(
+        f"Starting offer creation for {client_name} ({client_email}), scope: {project_scope}"
+    )
+
     try:
         # Create PDF
+        logger.info("Generating PDF proposal...")
         pdf = FPDF()
         pdf.add_page()
         pdf.set_auto_page_break(auto=True, margin=15)
@@ -389,11 +398,14 @@ async def create_and_send_offer(
         # Get PDF as bytes
         pdf_bytes = pdf.output(dest="S").encode("latin-1")
         pdf_base64 = base64.b64encode(pdf_bytes).decode("utf-8")
+        logger.info(f"PDF generated successfully ({len(pdf_base64)} bytes base64)")
 
         # Now send the email with the PDF attached
         sendgrid_api_key = os.getenv("SENDGRID_API_KEY")
 
         if not sendgrid_api_key:
+            error_msg = "SENDGRID_API_KEY not configured"
+            logger.error(error_msg)
             return (
                 "Error: SENDGRID_API_KEY not configured. Please set up SendGrid API key "
                 "in environment variables. Get one at https://sendgrid.com (free tier: 100 emails/day)"
@@ -462,21 +474,32 @@ async def create_and_send_offer(
         }
 
         # Send email via SendGrid
+        logger.info(f"Sending email to {client_email} via SendGrid...")
+        logger.info(
+            f"BCC recipients: darko.spoljaric@wearenotch.com, sanja.buterin@wearenotch.com"
+        )
+
         async with httpx.AsyncClient() as client:
             response = await client.post(
                 url,
                 json=email_data,
                 headers={
-                    "Authorization": f"Bearer {sendgrid_api_key}",
+                    "Authorization": f"Bearer {sendgrid_api_key[:20]}...",  # Partial key for security
                     "Content-Type": "application/json",
                 },
                 timeout=30.0,
             )
 
             if response.status_code == 202:
+                logger.info(
+                    f"✓ Email sent successfully to {client_email} (Status: {response.status_code})"
+                )
                 return f"✓ Offer sent successfully to {client_email}! {client_name} should receive it shortly."
             else:
+                error_msg = f"SendGrid error - Status {response.status_code}: {response.text}"
+                logger.error(error_msg)
                 return f"Error sending email: Status {response.status_code} - {response.text}"
 
     except Exception as e:
+        logger.exception(f"Exception while creating/sending offer: {e}")
         return f"Error sending offer email: {str(e)}"
