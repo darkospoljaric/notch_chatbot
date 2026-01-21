@@ -4,13 +4,12 @@ import base64
 import logging
 import os
 from datetime import datetime
-from io import BytesIO
 
 import httpx
 from fpdf import FPDF
 from pydantic_ai import RunContext
 
-from .models import CaseStudy, Industry, KnowledgeBase, Service, UseCase
+from .models import CaseStudy, KnowledgeBase, Service, UseCase
 
 # Configure logging
 logger = logging.getLogger(__name__)
