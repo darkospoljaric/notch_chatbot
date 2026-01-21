@@ -1,12 +1,6 @@
 #!/usr/bin/env python3
 """Test that Streamlit app imports work correctly."""
 
-import sys
-from pathlib import Path
-
-# Add project root to path
-sys.path.insert(0, str(Path(__file__).parent.parent.parent))
-
 print("Testing imports...")
 
 try:
@@ -24,14 +18,14 @@ except ImportError as e:
     exit(1)
 
 try:
-    from src.notch_chatbot.agent import create_notch_agent
+    from notch_chatbot.agent import create_notch_agent
     print("✓ agent module imported")
 except ImportError as e:
     print(f"✗ Failed to import agent: {e}")
     exit(1)
 
 try:
-    from src.notch_chatbot.knowledge_base import load_knowledge_base
+    from notch_chatbot.knowledge_base import load_knowledge_base
     print("✓ knowledge_base module imported")
 except ImportError as e:
     print(f"✗ Failed to import knowledge_base: {e}")

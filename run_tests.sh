@@ -17,7 +17,7 @@ if [ ! -f .env ]; then
     exit 1
 fi
 
-# Function to run tests
+# Function to run test scripts (not pytest tests yet)
 run_test_category() {
     local category=$1
     local path=$2
@@ -27,6 +27,11 @@ run_test_category() {
     echo -e "${BLUE}━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━${NC}\n"
 
     for test_file in tests/${path}/*.py; do
+        # Skip __init__.py files
+        if [[ "$(basename "$test_file")" == "__init__.py" ]]; then
+            continue
+        fi
+
         if [ -f "$test_file" ]; then
             echo -e "${YELLOW}Running: ${test_file}${NC}"
             if uv run python "$test_file"; then

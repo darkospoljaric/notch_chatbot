@@ -22,6 +22,10 @@ Test individual components in isolation:
 
 **Run unit tests:**
 ```bash
+# Using the test runner
+./run_tests.sh unit
+
+# Or directly with uv
 uv run python tests/unit/verify_kb.py
 uv run python tests/unit/test_streamlit_imports.py
 ```
@@ -72,25 +76,22 @@ for test in tests/integration/*.py; do uv run python "$test"; done
 for test in tests/demo/*.py; do uv run python "$test"; done
 ```
 
-### Using pytest (recommended):
+### Using pytest:
 ```bash
-# Install pytest if not already installed
-uv add --dev pytest pytest-asyncio
+# Note: Current test files are scripts, not pytest test functions
+# They can be run directly with uv run python
 
-# Run all tests
+# For pytest-compatible tests (to be added):
 uv run pytest tests/
-
-# Run specific category
-uv run pytest tests/unit/
-uv run pytest tests/integration/
-uv run pytest tests/demo/
 
 # Run with verbose output
 uv run pytest tests/ -v
 
 # Run with coverage
-uv run pytest tests/ --cov=src/notch_chatbot
+uv run pytest tests/ --cov=notch_chatbot
 ```
+
+**Note**: The package is installed in development mode via `uv sync`, so all imports work automatically without path manipulation. Import from `notch_chatbot` directly (e.g., `from notch_chatbot.agent import create_notch_agent`).
 
 ## Test Requirements
 

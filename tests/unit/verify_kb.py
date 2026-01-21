@@ -1,13 +1,7 @@
 #!/usr/bin/env python3
 """Quick script to verify knowledge base loads correctly."""
 
-import sys
-from pathlib import Path
-
-# Add project root to path
-sys.path.insert(0, str(Path(__file__).parent.parent.parent))
-
-from src.notch_chatbot.knowledge_base import load_knowledge_base
+from notch_chatbot.knowledge_base import load_knowledge_base
 
 
 def main():
