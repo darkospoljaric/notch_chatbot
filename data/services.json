@@ -1,0 +1,225 @@
+[
+  {
+    "id": "custom-software-dev",
+    "name": "Custom Software Development",
+    "category": "build",
+    "description": "End-to-end development of robust, innovative, secure, and efficient B2B software solutions tailored to your exact needs. We handle everything from initial planning through deployment and ongoing support.",
+    "short_description": "Custom B2B software built from scratch to match your specific requirements",
+    "key_features": [
+      "Cross-functional teams (PM, developers, designers, QA engineers)",
+      "Agile methodologies",
+      "Support for regulated industries (healthcare, finance)",
+      "Multiple tech stacks (Java, .NET, Node.js, Python, React, Angular, Kubernetes)",
+      "Post-deployment continuous support"
+    ],
+    "related_expertise": ["software_engineering", "quality_engineering", "cloud_devops"],
+    "ideal_for": [
+      "Complex B2B platforms",
+      "Regulated industries (healthcare, finance)",
+      "Enterprises needing tailored solutions",
+      "Companies with unique workflow requirements"
+    ],
+    "url": "https://www.wearenotch.com/services/custom-software-development"
+  },
+  {
+    "id": "agentic-ai-systems",
+    "name": "Agentic AI Systems",
+    "category": "build",
+    "description": "Turn AI experiments into reliable, usable features and workflows with autonomous decision-making capabilities. We build production-ready AI agents that can make intelligent decisions and take actions on your behalf.",
+    "short_description": "Build AI agents that can make autonomous decisions and take actions",
+    "key_features": [
+      "Autonomous decision-making systems",
+      "Reliable AI feature integration",
+      "Production-ready AI systems",
+      "Custom AI agent development"
+    ],
+    "related_expertise": ["ai_engineering", "software_engineering"],
+    "ideal_for": [
+      "Companies wanting to move AI from experiment to production",
+      "Automation of complex workflows",
+      "Businesses needing intelligent decision-making systems"
+    ],
+    "url": "https://www.wearenotch.com/services/agentic-ai-systems"
+  },
+  {
+    "id": "product-discovery",
+    "name": "Product Discovery",
+    "category": "plan",
+    "description": "Strategic workshops to validate your product idea, understand market needs, and define the right approach before investing in development.",
+    "short_description": "Validate and plan your product strategy before building",
+    "key_features": [
+      "Market validation",
+      "User research",
+      "Feature prioritization",
+      "Technical feasibility assessment"
+    ],
+    "related_expertise": ["product_management"],
+    "ideal_for": [
+      "Startups with new product ideas",
+      "Companies entering new markets",
+      "Teams pivoting their product strategy"
+    ],
+    "url": "https://www.wearenotch.com/services/product-discovery"
+  },
+  {
+    "id": "ai-discovery-workshop",
+    "name": "AI Discovery Workshop",
+    "category": "plan",
+    "description": "Structured workshops to identify AI opportunities in your business, assess feasibility, and create a roadmap for implementation.",
+    "short_description": "Discover where AI can add value to your business",
+    "key_features": [
+      "AI opportunity identification",
+      "Feasibility assessment",
+      "ROI estimation",
+      "Implementation roadmap"
+    ],
+    "related_expertise": ["ai_engineering", "product_management"],
+    "ideal_for": [
+      "Companies exploring AI adoption",
+      "Businesses with manual processes to automate",
+      "Organizations seeking competitive advantage through AI"
+    ],
+    "url": "https://www.wearenotch.com/services/ai-discovery-workshop"
+  },
+  {
+    "id": "ux-ui-design",
+    "name": "UX/UI Design",
+    "category": "design",
+    "description": "User-centered design services including user research, wireframing, prototyping, and visual design to create intuitive, engaging interfaces.",
+    "short_description": "Design intuitive interfaces your users will love",
+    "key_features": [
+      "User research and testing",
+      "Wireframing and prototyping",
+      "Visual design",
+      "Design systems"
+    ],
+    "related_expertise": ["product_management"],
+    "ideal_for": [
+      "Products needing design refresh",
+      "New applications requiring user-first approach",
+      "Companies wanting to improve user satisfaction"
+    ],
+    "url": "https://www.wearenotch.com/services/ux-ui-design"
+  },
+  {
+    "id": "team-extension",
+    "name": "Team Extension",
+    "category": "build",
+    "description": "Augment your existing development team with our experienced engineers who integrate seamlessly into your workflows and processes.",
+    "short_description": "Extend your team with experienced developers",
+    "key_features": [
+      "Seamless integration with existing teams",
+      "Flexible engagement models",
+      "Diverse technical expertise",
+      "Quick ramp-up time"
+    ],
+    "related_expertise": ["software_engineering", "quality_engineering"],
+    "ideal_for": [
+      "Teams needing additional capacity",
+      "Companies with temporary skill gaps",
+      "Projects requiring specialized expertise"
+    ],
+    "url": "https://www.wearenotch.com/services/team-extension"
+  },
+  {
+    "id": "mvp-development",
+    "name": "Minimum Viable Product (MVP)",
+    "category": "build",
+    "description": "Rapid development of a functional MVP to validate your product idea in the market quickly and cost-effectively.",
+    "short_description": "Launch your product idea quickly with a lean MVP",
+    "key_features": [
+      "Rapid development",
+      "Focus on core features",
+      "Iterative approach",
+      "Market validation focus"
+    ],
+    "related_expertise": ["software_engineering", "product_management"],
+    "typical_timeline": "8-12 weeks",
+    "ideal_for": [
+      "Startups validating product-market fit",
+      "Companies testing new market opportunities",
+      "Entrepreneurs with limited budget"
+    ],
+    "url": "https://www.wearenotch.com/services/minimum-viable-product"
+  },
+  {
+    "id": "enterprise-modernization",
+    "name": "Enterprise Application Modernization",
+    "category": "build",
+    "description": "Transform legacy systems into modern, scalable, cloud-native applications while preserving business logic and minimizing disruption.",
+    "short_description": "Modernize legacy systems without disrupting your business",
+    "key_features": [
+      "Legacy system assessment",
+      "Gradual migration strategies",
+      "Cloud-native architecture",
+      "Minimal business disruption"
+    ],
+    "related_expertise": ["software_engineering", "cloud_devops"],
+    "ideal_for": [
+      "Enterprises with legacy systems",
+      "Companies struggling with maintenance costs",
+      "Organizations needing better scalability"
+    ],
+    "url": "https://www.wearenotch.com/services/enterprise-modernization"
+  },
+  {
+    "id": "camunda-bpm",
+    "name": "Camunda BPM Platform Integration",
+    "category": "integrate",
+    "description": "Expert integration of Camunda BPM platform to automate and optimize your business processes with workflow orchestration.",
+    "short_description": "Automate workflows with Camunda BPM integration",
+    "key_features": [
+      "Process automation",
+      "Workflow orchestration",
+      "Business process modeling (BPMN)",
+      "Integration with existing systems"
+    ],
+    "related_expertise": ["bpm_solutions", "software_engineering"],
+    "ideal_for": [
+      "Companies with complex workflows",
+      "Organizations needing process automation",
+      "Enterprises requiring audit trails"
+    ],
+    "url": "https://www.wearenotch.com/services/camunda-bpm-integration"
+  },
+  {
+    "id": "okta-integration",
+    "name": "Okta CIC Platform Integration",
+    "category": "integrate",
+    "description": "Secure identity and access management integration using Okta Customer Identity Cloud (CIC) platform.",
+    "short_description": "Implement secure authentication with Okta",
+    "key_features": [
+      "Single sign-on (SSO)",
+      "Multi-factor authentication (MFA)",
+      "User management",
+      "Security compliance"
+    ],
+    "related_expertise": ["identity_access_management", "software_engineering"],
+    "ideal_for": [
+      "Applications needing secure authentication",
+      "Companies with compliance requirements",
+      "B2B SaaS platforms"
+    ],
+    "url": "https://www.wearenotch.com/services/okta-integration"
+  },
+  {
+    "id": "iot-solutions",
+    "name": "IoT Location Solutions",
+    "category": "build",
+    "description": "Custom IoT solutions for real-time location tracking and monitoring, especially for safety-critical environments.",
+    "short_description": "Real-time IoT tracking for safety-critical environments",
+    "key_features": [
+      "Real-time location tracking",
+      "Safety monitoring",
+      "Custom hardware integration",
+      "Data analytics dashboard"
+    ],
+    "related_expertise": ["iot_solutions", "software_engineering"],
+    "ideal_for": [
+      "Manufacturing and industrial environments",
+      "Oil, gas, and energy sectors",
+      "Safety-critical operations"
+    ],
+    "url": "https://www.wearenotch.com/services/iot-solutions"
+  }
+]

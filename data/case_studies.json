@@ -1,0 +1,88 @@
+[
+  {
+    "id": "spotsie-iot-safety",
+    "client_name": "Spotsie",
+    "title": "Turning Time Loss into Time Savings",
+    "industry": "manufacturing",
+    "services_used": ["custom-software-dev", "iot-solutions"],
+    "challenge": "Oil and energy sectors face significant safety challenges in hazardous environments. Workers need real-time tracking and monitoring to ensure safety compliance and rapid emergency response.",
+    "solution": "Custom IoT solution for real-time location tracking and safety management. Integrated hardware and software platform providing continuous monitoring and alerting capabilities.",
+    "outcome": "Enhanced worker safety through real-time visibility and faster emergency response times.",
+    "technologies": ["IoT", "Real-time Tracking", "Safety Systems", "Custom Hardware Integration"],
+    "url": "https://www.wearenotch.com/customer-stories/spotsie"
+  },
+  {
+    "id": "automarket-ux",
+    "client_name": "Automarket",
+    "title": "Beyond Aesthetics - Transforming User Experience",
+    "industry": "automotive",
+    "services_used": ["ux-ui-design"],
+    "challenge": "Automotive marketplace needed to improve user experience beyond just visual appeal to drive engagement and conversions.",
+    "solution": "Comprehensive UX/UI redesign based on user research, creating intuitive interfaces that guide users through complex automotive transactions.",
+    "outcome": "Improved user engagement and satisfaction through data-driven design decisions.",
+    "technologies": ["UX Research", "UI Design", "Design Systems"],
+    "url": "https://www.wearenotch.com/customer-stories/automarket"
+  },
+  {
+    "id": "arisglobal-pharma",
+    "client_name": "ArisGlobal",
+    "title": "Pharma Regulatory Compliance Excellence",
+    "industry": "pharma",
+    "services_used": ["team-extension"],
+    "challenge": "Pharmaceutical company needed to optimize their Regulatory Information Management (RIM) system to handle complex compliance requirements efficiently.",
+    "solution": "Extended their team with specialized engineers experienced in pharma compliance and regulatory systems, integrating seamlessly with existing development workflows.",
+    "outcome": "Optimized RIM system enabling faster regulatory submissions and improved compliance tracking.",
+    "technologies": ["Regulatory Systems", "Compliance Software", "Enterprise Applications"],
+    "url": "https://www.wearenotch.com/customer-stories/arisglobal"
+  },
+  {
+    "id": "beeline-vms",
+    "client_name": "Beeline",
+    "title": "Operational Efficiency Through Process Integration",
+    "industry": "workforce_management",
+    "services_used": ["camunda-bpm"],
+    "challenge": "Workforce management platform needed seamless integration of two separate Vendor Management Systems (VMS) to streamline operations.",
+    "solution": "Implemented Camunda BPM platform to orchestrate workflows across both VMS systems, creating unified process automation.",
+    "outcome": "Achieved operational efficiency with seamless cross-system workflows and improved vendor management processes.",
+    "technologies": ["Camunda BPM", "Workflow Automation", "System Integration"],
+    "partnership_duration": "5+ years",
+    "url": "https://www.wearenotch.com/customer-stories/beeline"
+  },
+  {
+    "id": "iskon-telco",
+    "client_name": "Iskon (T-Com)",
+    "title": "CX Benchmarks & Process Automation",
+    "industry": "telco",
+    "services_used": ["camunda-bpm", "custom-software-dev"],
+    "challenge": "Telecommunications provider needed to improve customer experience and automate complex business processes across multiple touchpoints.",
+    "solution": "Integrated Camunda BPM for process automation and developed custom solutions to enhance customer journey and operational efficiency.",
+    "outcome": "Set new customer experience benchmarks while significantly reducing manual process overhead.",
+    "technologies": ["Camunda BPM", "Process Automation", "Customer Experience Platform"],
+    "partnership_duration": "8+ years",
+    "url": "https://www.wearenotch.com/customer-stories/iskon"
+  },
+  {
+    "id": "digitalai-partnership",
+    "client_name": "DigitalAI",
+    "title": "Long-term Strategic Development Partnership",
+    "industry": "saas",
+    "services_used": ["team-extension", "custom-software-dev"],
+    "challenge": "Software company needed reliable development partner to support ongoing product evolution and feature development.",
+    "solution": "Established long-term team extension partnership providing consistent development capacity and specialized expertise.",
+    "outcome": "8+ years of successful collaboration enabling continuous product innovation and market competitiveness.",
+    "partnership_duration": "8+ years",
+    "url": "https://www.wearenotch.com/customer-stories/digitalai"
+  },
+  {
+    "id": "strabag-construction",
+    "client_name": "STRABAG",
+    "title": "Digital Transformation in Construction",
+    "industry": "enterprise",
+    "services_used": ["custom-software-dev", "team-extension"],
+    "challenge": "Large construction company required digital solutions to modernize operations and improve project management efficiency.",
+    "solution": "Developed custom enterprise software solutions and provided ongoing development support through team extension.",
+    "outcome": "Successful digital transformation supporting complex construction projects with improved efficiency.",
+    "partnership_duration": "6+ years",
+    "url": "https://www.wearenotch.com/customer-stories/strabag"
+  }
+]

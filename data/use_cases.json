@@ -1,0 +1,22 @@
+[
+  {
+    "id": "ai-yaml-generation",
+    "title": "Custom AI Agent for Automated YAML Generation",
+    "domain": "ai_engineering",
+    "problem": "Manual YAML configuration for DevOps workflows is time-consuming, error-prone, and requires deep technical knowledge. Teams spend hours creating and validating configuration files.",
+    "solution": "Developed agentic AI system that automatically generates and validates YAML configurations based on natural language requirements. The AI agent understands context, best practices, and can adapt to project-specific patterns.",
+    "metric": null,
+    "related_services": ["agentic-ai-systems", "custom-software-dev"],
+    "url": "https://www.wearenotch.com/use-cases/ai-yaml-generation"
+  },
+  {
+    "id": "ai-data-processing",
+    "title": "AI-Powered Automated Data Processing",
+    "domain": "ai_engineering",
+    "problem": "Manual data processing operations are slow, labor-intensive, and prone to inconsistencies. Organizations struggle with data quality and processing bottlenecks that slow business operations.",
+    "solution": "Built AI-powered automation system for accurate data input, validation, and formatting. The system learns from patterns, handles edge cases, and maintains data quality standards automatically.",
+    "metric": "30x acceleration in data processing",
+    "related_services": ["agentic-ai-systems", "custom-software-dev"],
+    "url": "https://www.wearenotch.com/use-cases/ai-data-processing"
+  }
+]

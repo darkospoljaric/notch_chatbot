@@ -1,0 +1,18 @@
+[project]
+name = "notch-chatbot"
+version = "0.1.0"
+description = "AI chatbot for Notch software development agency"
+readme = "README.md"
+requires-python = ">=3.13"
+dependencies = [
+    "httpx>=0.28.1",
+    "pydantic-ai[openai]>=1.44.0",
+    "python-dotenv>=1.2.1",
+    "streamlit>=1.53.0",
+]
+
+[project.scripts]
+notch-chatbot = "notch_chatbot.cli:main"
+
+[tool.uv]
+package = true

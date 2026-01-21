@@ -1,0 +1,10 @@
+{
+  "ai_engineering": "Expertise in building production-ready AI systems, including agentic AI, machine learning integration, and turning AI experiments into reliable business features.",
+  "software_engineering": "Full-stack software development expertise across multiple languages and frameworks (Java, .NET, Node.js, Python, React, Angular) with focus on scalable, maintainable enterprise solutions.",
+  "quality_engineering": "Comprehensive QA services including manual and automated testing, test strategy development, and continuous quality assurance throughout the development lifecycle.",
+  "product_management": "Strategic product planning, user research, feature prioritization, and product discovery to ensure development efforts align with business goals and user needs.",
+  "identity_access_management": "Specialized expertise in identity and access management solutions, including Okta integration, SSO, MFA, and security compliance for enterprise applications.",
+  "cloud_devops": "Cloud-native architecture, DevOps automation, CI/CD pipelines, infrastructure as code, and deployment to major cloud platforms (AWS, Azure, GCP) with Kubernetes expertise.",
+  "bpm_solutions": "Business Process Management using Camunda BPM platform for workflow automation, process orchestration, and business process modeling (BPMN 2.0).",
+  "iot_solutions": "Custom IoT development for real-time location tracking, monitoring systems, sensor integration, and IoT platform development for industrial and safety-critical applications."
+}
