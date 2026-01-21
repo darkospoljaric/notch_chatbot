@@ -415,9 +415,7 @@ async def create_and_send_offer(
                 }
             ],
             "from": {
-                "email": os.getenv(
-                    "SENDGRID_FROM_EMAIL", "proposals@wearenotch.com"
-                ),
+                "email": "proposals@wearenotch.com",
                 "name": "Notch Team",
             },
             "content": [

@@ -42,22 +42,23 @@ The chatbot includes a powerful tool:
 ### Step 3: Verify Sender Identity
 1. Go to **Settings** → **Sender Authentication**
 2. Choose **Single Sender Verification** (easiest for free tier)
-3. Add your email address (e.g., proposals@wearenotch.com or your personal email)
+3. Add **proposals@wearenotch.com** (this is hardcoded in the bot)
 4. Fill in the form with sender details
 5. Check your email and click the verification link
 6. Wait for approval (usually instant)
+
+**Important**: You must verify `proposals@wearenotch.com` as this email is hardcoded in the application.
 
 ### Step 4: Configure Environment Variables
 Add to your `.env` file:
 
 ```bash
 SENDGRID_API_KEY=SG.your_actual_api_key_here
-SENDGRID_FROM_EMAIL=verified-email@example.com  # Must match verified sender
 ```
 
 **Important**:
-- Use the email you verified in Step 3
 - Keep the API key secret (never commit to git)
+- The sender email is hardcoded as `proposals@wearenotch.com` and cannot be changed via environment variables
 
 ## How It Works
 

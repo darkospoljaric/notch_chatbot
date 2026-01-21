@@ -47,8 +47,9 @@ To enable automated PDF proposal generation and sending, set up SendGrid (free t
 
 ```
 SENDGRID_API_KEY=your-sendgrid-api-key
-SENDGRID_FROM_EMAIL=proposals@wearenotch.com
 ```
+
+Proposals are automatically sent from `proposals@wearenotch.com` (hardcoded).
 
 See [EMAIL_SETUP.md](EMAIL_SETUP.md) for detailed setup instructions.
 
