@@ -91,10 +91,17 @@ notch-chatbot/
 │   ├── case_studies.json      # Customer success stories
 │   ├── use_cases.json         # Use case examples
 │   └── expertise.json         # Expertise domain descriptions
+├── tests/                     # Test suite
+│   ├── unit/                  # Unit tests
+│   ├── integration/           # Integration tests
+│   ├── demo/                  # Demo tests
+│   └── README.md              # Test documentation
 ├── .streamlit/
 │   ├── config.toml            # Streamlit configuration
 │   └── secrets.toml.example   # Example secrets file
 ├── requirements.txt           # Dependencies for Streamlit Cloud
+├── pytest.ini                 # Pytest configuration
+├── run_tests.sh              # Test runner script
 ├── pyproject.toml            # Project configuration
 ├── DEPLOYMENT.md             # Deployment guide
 └── README.md
@@ -144,8 +151,53 @@ The system prompt and agent configuration are in `src/notch_chatbot/agent.py`.
 - **Python 3.13+**
 - **Pydantic AI**: Agent framework with tool calling
 - **OpenAI GPT-4**: Language model
+- **Streamlit**: Web UI framework
 - **httpx**: HTTP client for blog fetching
 - **uv**: Fast Python package manager
+- **pytest**: Testing framework (dev)
+
+## Testing
+
+The project includes a comprehensive test suite organized by category:
+
+```
+tests/
+├── unit/              # Unit tests (fast, no API calls)
+├── integration/       # Integration tests (agent behavior)
+└── demo/             # End-to-end demonstrations
+```
+
+### Run All Tests
+
+```bash
+# Using the test runner script
+./run_tests.sh
+
+# Or run specific categories
+./run_tests.sh unit
+./run_tests.sh integration
+./run_tests.sh demo
+
+# Using pytest
+uv run pytest tests/
+uv run pytest tests/unit/
+uv run pytest tests/integration/
+```
+
+### Quick Validation
+
+```bash
+# Verify knowledge base
+uv run python tests/unit/verify_kb.py
+
+# Test agent responses
+uv run python tests/integration/test_agent.py
+
+# See full demo
+uv run python tests/demo/test_full_demo.py
+```
+
+See [tests/README.md](tests/README.md) for detailed testing documentation.
 
 ## License
 
