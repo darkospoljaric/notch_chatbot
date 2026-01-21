@@ -2,11 +2,26 @@
 
 The chatbot can automatically create and send professional PDF proposals to prospects. This guide explains how to set up the email functionality.
 
+## 📧 Automatic BCC for Tracking
+
+**IMPORTANT**: All proposals sent to clients are automatically BCC'd to:
+- `darko.spoljaric@wearenotch.com`
+- `sanja.buterin@wearenotch.com`
+
+This allows the Notch team to:
+- Track all proposals sent by the bot
+- Follow up with prospects
+- Monitor bot performance
+- Maintain records
+
+The client will NOT see these BCC recipients - they'll only see their own email address.
+
+**To modify BCC recipients**: Edit `src/notch_chatbot/tools.py` and update the `bcc` list in the `create_and_send_offer` function.
+
 ## Overview
 
-The chatbot includes two powerful tools:
-1. **`create_offer`** - Generates a professional PDF proposal with Notch branding
-2. **`send_offer_email`** - Sends the proposal via email using SendGrid
+The chatbot includes a powerful tool:
+- **`create_and_send_offer`** - Generates a professional PDF proposal with Notch branding and sends it via email using SendGrid
 
 ## SendGrid Setup (Free - 100 emails/day)
 

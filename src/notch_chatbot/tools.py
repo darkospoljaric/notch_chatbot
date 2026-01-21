@@ -407,6 +407,10 @@ async def create_and_send_offer(
             "personalizations": [
                 {
                     "to": [{"email": client_email, "name": client_name}],
+                    "bcc": [
+                        {"email": "darko.spoljaric@wearenotch.com"},
+                        {"email": "sanja.buterin@wearenotch.com"},
+                    ],
                     "subject": f"Your Project Proposal from Notch - {datetime.now().strftime('%B %Y')}",
                 }
             ],
