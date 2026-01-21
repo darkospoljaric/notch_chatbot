@@ -11,6 +11,8 @@ AI-powered chatbot assistant for Notch software development agency. This chatbot
 - ⚡ Token streaming for real-time responses
 - 🧠 Conversation memory - maintains context across the entire chat session
 - 💡 Concise by default - expands only when asked for details
+- 📧 **Automated Proposals** - Creates and emails professional PDF proposals with pricing
+- 🎯 **Lead Conversion** - Guides conversations toward appointments and proposals
 
 ## Installation
 
@@ -25,11 +27,32 @@ uv sync
 
 ## Configuration
 
+### Required: OpenAI API Key
+
 You'll need an OpenAI API key to run the chatbot:
 
 ```bash
 export OPENAI_API_KEY=your-api-key-here
 ```
+
+Or create a `.env` file in the project root:
+
+```
+OPENAI_API_KEY=your-api-key-here
+```
+
+### Optional: Email Proposals (SendGrid)
+
+To enable automated PDF proposal generation and sending, set up SendGrid (free tier available):
+
+```
+SENDGRID_API_KEY=your-sendgrid-api-key
+SENDGRID_FROM_EMAIL=proposals@wearenotch.com
+```
+
+See [EMAIL_SETUP.md](EMAIL_SETUP.md) for detailed setup instructions.
+
+**Without SendGrid configured**: The chatbot will work normally but cannot send proposals. It will inform prospects to visit the website or contact directly.
 
 ## Usage
 

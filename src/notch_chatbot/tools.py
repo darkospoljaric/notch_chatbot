@@ -1,6 +1,12 @@
 """Tools for the Notch chatbot agent."""
 
+import base64
+import os
+from datetime import datetime
+from io import BytesIO
+
 import httpx
+from fpdf import FPDF
 from pydantic_ai import RunContext
 
 from .models import CaseStudy, Industry, KnowledgeBase, Service, UseCase
@@ -234,3 +240,241 @@ async def fetch_latest_blog_posts(
             )
     except Exception as e:
         return f"Unable to fetch blog posts at this time. Visit https://www.wearenotch.com/resources/blog for latest content. Error: {str(e)}"
+
+
+async def create_and_send_offer(
+    client_name: str,
+    client_email: str,
+    project_description: str,
+    services_list: str,
+    project_scope: str = "medium",
+) -> str:
+    """Create a PDF offer/proposal and send it via email to the prospect.
+
+    Args:
+        client_name: Name of the client/prospect
+        client_email: Email address of the client
+        project_description: Description of the project based on conversation
+        services_list: Comma-separated list of relevant Notch services
+        project_scope: Project size - "small", "medium", or "large" (affects pricing)
+
+    Returns:
+        Success or error message
+    """
+    try:
+        # Create PDF
+        pdf = FPDF()
+        pdf.add_page()
+        pdf.set_auto_page_break(auto=True, margin=15)
+
+        # Header with Notch branding
+        pdf.set_font("Arial", "B", 24)
+        pdf.set_text_color(0, 102, 204)  # Blue color for branding
+        pdf.cell(0, 10, "NOTCH", ln=True, align="C")
+        pdf.set_font("Arial", "I", 10)
+        pdf.set_text_color(100, 100, 100)
+        pdf.cell(0, 5, "Software Development & AI Solutions", ln=True, align="C")
+        pdf.ln(10)
+
+        # Date
+        pdf.set_font("Arial", "", 10)
+        pdf.set_text_color(0, 0, 0)
+        pdf.cell(0, 5, f"Date: {datetime.now().strftime('%B %d, %Y')}", ln=True)
+        pdf.ln(5)
+
+        # Client information
+        pdf.set_font("Arial", "B", 12)
+        pdf.cell(0, 7, "Proposal For:", ln=True)
+        pdf.set_font("Arial", "", 11)
+        pdf.cell(0, 6, f"{client_name}", ln=True)
+        pdf.cell(0, 6, f"{client_email}", ln=True)
+        pdf.ln(10)
+
+        # Project overview
+        pdf.set_font("Arial", "B", 14)
+        pdf.set_text_color(0, 102, 204)
+        pdf.cell(0, 8, "Project Overview", ln=True)
+        pdf.set_text_color(0, 0, 0)
+        pdf.set_font("Arial", "", 11)
+        pdf.multi_cell(0, 6, project_description)
+        pdf.ln(5)
+
+        # Recommended services
+        pdf.set_font("Arial", "B", 14)
+        pdf.set_text_color(0, 102, 204)
+        pdf.cell(0, 8, "Recommended Services", ln=True)
+        pdf.set_text_color(0, 0, 0)
+        pdf.set_font("Arial", "", 11)
+        pdf.multi_cell(0, 6, services_list)
+        pdf.ln(5)
+
+        # Team composition
+        pdf.set_font("Arial", "B", 14)
+        pdf.set_text_color(0, 102, 204)
+        pdf.cell(0, 8, "Team Composition", ln=True)
+        pdf.set_text_color(0, 0, 0)
+        pdf.set_font("Arial", "", 11)
+        pdf.multi_cell(
+            0,
+            6,
+            "Your project will be handled by a dedicated team including:\n"
+            "- Project Manager\n"
+            "- Senior Software Engineers\n"
+            "- UI/UX Designer\n"
+            "- QA Specialist\n"
+            "- DevOps Engineer (as needed)",
+        )
+        pdf.ln(5)
+
+        # Pricing estimate
+        pdf.set_font("Arial", "B", 14)
+        pdf.set_text_color(0, 102, 204)
+        pdf.cell(0, 8, "Investment Estimate", ln=True)
+        pdf.set_text_color(0, 0, 0)
+        pdf.set_font("Arial", "", 11)
+
+        # Determine pricing based on scope
+        pricing_info = {
+            "small": "Starting from $15,000 - $35,000",
+            "medium": "Typical range: $35,000 - $100,000 depending on scope",
+            "large": "Starting from $100,000+ depending on requirements",
+        }
+
+        pricing_text = pricing_info.get(project_scope.lower(), pricing_info["medium"])
+        pdf.multi_cell(
+            0,
+            6,
+            f"{pricing_text}\n\n"
+            "Final pricing will be determined based on detailed requirements, "
+            "timeline, and project complexity. We'll provide a detailed breakdown "
+            "after our initial consultation call.",
+        )
+        pdf.ln(5)
+
+        # Next steps
+        pdf.set_font("Arial", "B", 14)
+        pdf.set_text_color(0, 102, 204)
+        pdf.cell(0, 8, "Next Steps", ln=True)
+        pdf.set_text_color(0, 0, 0)
+        pdf.set_font("Arial", "", 11)
+        pdf.multi_cell(
+            0,
+            6,
+            "1. Review this proposal\n"
+            "2. Schedule a consultation call to discuss details\n"
+            "3. Receive detailed project plan and final quote\n"
+            "4. Project kickoff and development",
+        )
+        pdf.ln(10)
+
+        # Disclaimer
+        pdf.set_font("Arial", "I", 9)
+        pdf.set_text_color(100, 100, 100)
+        pdf.multi_cell(
+            0,
+            5,
+            "IMPORTANT: This proposal is for orientational purposes only and does not "
+            "constitute a binding offer. Final terms, pricing, and deliverables will be "
+            "confirmed in a formal contract following detailed requirements analysis.",
+        )
+        pdf.ln(5)
+
+        # Footer
+        pdf.set_y(-30)
+        pdf.set_font("Arial", "", 9)
+        pdf.set_text_color(100, 100, 100)
+        pdf.cell(0, 5, "Notch Software Development", ln=True, align="C")
+        pdf.cell(0, 5, "www.wearenotch.com", ln=True, align="C")
+
+        # Get PDF as bytes
+        pdf_bytes = pdf.output(dest="S").encode("latin-1")
+        pdf_base64 = base64.b64encode(pdf_bytes).decode("utf-8")
+
+        # Now send the email with the PDF attached
+        sendgrid_api_key = os.getenv("SENDGRID_API_KEY")
+
+        if not sendgrid_api_key:
+            return (
+                "Error: SENDGRID_API_KEY not configured. Please set up SendGrid API key "
+                "in environment variables. Get one at https://sendgrid.com (free tier: 100 emails/day)"
+            )
+
+        # SendGrid API endpoint
+        url = "https://api.sendgrid.com/v3/mail/send"
+
+        # Email content
+        email_data = {
+            "personalizations": [
+                {
+                    "to": [{"email": client_email, "name": client_name}],
+                    "subject": f"Your Project Proposal from Notch - {datetime.now().strftime('%B %Y')}",
+                }
+            ],
+            "from": {
+                "email": os.getenv(
+                    "SENDGRID_FROM_EMAIL", "proposals@wearenotch.com"
+                ),
+                "name": "Notch Team",
+            },
+            "content": [
+                {
+                    "type": "text/html",
+                    "value": f"""
+                    <html>
+                        <body style="font-family: Arial, sans-serif; line-height: 1.6; color: #333;">
+                            <h2 style="color: #0066cc;">Hello {client_name},</h2>
+
+                            <p>Thank you for your interest in working with Notch! We're excited about the opportunity to help bring your project to life.</p>
+
+                            <p>Attached to this email, you'll find a detailed proposal outlining:</p>
+                            <ul>
+                                <li>Project overview and our understanding of your needs</li>
+                                <li>Recommended services and approach</li>
+                                <li>Team composition</li>
+                                <li>Investment estimate</li>
+                                <li>Next steps</li>
+                            </ul>
+
+                            <p>Please review the proposal at your convenience. We'd be happy to schedule a call to discuss any questions you might have and dive deeper into the details.</p>
+
+                            <p>Looking forward to hearing from you!</p>
+
+                            <p style="margin-top: 30px;">
+                                <strong>Best regards,</strong><br>
+                                The Notch Team<br>
+                                <a href="https://www.wearenotch.com" style="color: #0066cc;">www.wearenotch.com</a>
+                            </p>
+                        </body>
+                    </html>
+                    """,
+                }
+            ],
+            "attachments": [
+                {
+                    "content": pdf_base64,
+                    "filename": f"Notch_Proposal_{client_name.replace(' ', '_')}_{datetime.now().strftime('%Y%m%d')}.pdf",
+                    "type": "application/pdf",
+                    "disposition": "attachment",
+                }
+            ],
+        }
+
+        # Send email via SendGrid
+        async with httpx.AsyncClient() as client:
+            response = await client.post(
+                url,
+                json=email_data,
+                headers={
+                    "Authorization": f"Bearer {sendgrid_api_key}",
+                    "Content-Type": "application/json",
+                },
+                timeout=30.0,
+            )
+
+            if response.status_code == 202:
+                return f"✓ Offer sent successfully to {client_email}! {client_name} should receive it shortly."
+            else:
+                return f"Error sending email: Status {response.status_code} - {response.text}"
+
+    except Exception as e:
+        return f"Error sending offer email: {str(e)}"
