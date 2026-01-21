@@ -395,8 +395,8 @@ async def create_and_send_offer(
         pdf.cell(0, 5, "Notch Software Development", ln=True, align="C")
         pdf.cell(0, 5, "www.wearenotch.com", ln=True, align="C")
 
-        # Get PDF as bytes
-        pdf_bytes = pdf.output(dest="S").encode("latin-1")
+        # Get PDF as bytes (output returns bytes/bytearray directly)
+        pdf_bytes = pdf.output(dest="S")
         pdf_base64 = base64.b64encode(pdf_bytes).decode("utf-8")
         logger.info(f"PDF generated successfully ({len(pdf_base64)} bytes base64)")
 
