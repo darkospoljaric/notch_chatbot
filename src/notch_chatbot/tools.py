@@ -419,15 +419,11 @@ async def create_and_send_offer(
             "personalizations": [
                 {
                     "to": [{"email": client_email, "name": client_name}],
-                    "bcc": [
-                        {"email": "darko.spoljaric@wearenotch.com"},
-                        {"email": "sanja.buterin@wearenotch.com"},
-                    ],
                     "subject": f"Your Project Proposal from Notch - {datetime.now().strftime('%B %Y')}",
                 }
             ],
             "from": {
-                "email": "proposals@wearenotch.com",
+                "email": "shpula@gmail.com",
                 "name": "Notch Team",
             },
             "content": [
@@ -475,16 +471,13 @@ async def create_and_send_offer(
 
         # Send email via SendGrid
         logger.info(f"Sending email to {client_email} via SendGrid...")
-        logger.info(
-            f"BCC recipients: darko.spoljaric@wearenotch.com, sanja.buterin@wearenotch.com"
-        )
 
         async with httpx.AsyncClient() as client:
             response = await client.post(
                 url,
                 json=email_data,
                 headers={
-                    "Authorization": f"Bearer {sendgrid_api_key[:20]}...",  # Partial key for security
+                    "Authorization": f"Bearer {sendgrid_api_key}",  # Partial key for security
                     "Content-Type": "application/json",
                 },
                 timeout=30.0,
@@ -492,7 +485,7 @@ async def create_and_send_offer(
 
             if response.status_code == 202:
                 logger.info(
-                    f"✓ Email sent successfully to {client_email} (Status: {response.status_code})"
+                    f"✓ Email sent successfully to {client_email} from shpula@gmail.com (Status: {response.status_code})"
                 )
                 return f"✓ Offer sent successfully to {client_email}! {client_name} should receive it shortly."
             else:

@@ -41,15 +41,15 @@ Or create a `.env` file in the project root:
 OPENAI_API_KEY=your-api-key-here
 ```
 
-### Optional: Email Proposals (SendGrid)
+### Optional: Email Proposals (MailerSend)
 
-To enable automated PDF proposal generation and sending, set up SendGrid (free tier available):
+To enable automated PDF proposal generation and sending, set up MailerSend (free tier available):
 
 ```
 SENDGRID_API_KEY=your-sendgrid-api-key
 ```
 
-Proposals are automatically sent from `proposals@wearenotch.com` (hardcoded).
+**Note:** The environment variable is named `SENDGRID_API_KEY` for backward compatibility, but the system uses MailerSend API.
 
 See [EMAIL_SETUP.md](EMAIL_SETUP.md) for detailed setup instructions.
 
@@ -242,6 +242,34 @@ uv run python tests/integration/test_agent.py
 # See full demo
 uv run python tests/demo/test_full_demo.py
 ```
+
+### Email Integration Test
+
+A special integration test is available for testing the email sending functionality. This test requires a valid `SENDGRID_API_KEY` (MailerSend API key) in your `.env` file and is **skipped by default** in normal pytest runs.
+
+To run the email integration test:
+
+```bash
+# Run the email test with the special flag
+pytest tests/integration/test_email_send.py --run-email
+
+# With verbose output
+pytest tests/integration/test_email_send.py --run-email -v
+
+# Or using uv
+uv run pytest tests/integration/test_email_send.py --run-email -v
+```
+
+**What this test does:**
+- Loads `SENDGRID_API_KEY` (SendGrid API key) from your `.env` file
+- Sends a real test proposal email with PDF attachment via SendGrid
+- Verifies the email was sent successfully (Status 202)
+- Tests error handling when API key is missing
+
+**Before running:**
+1. Make sure you have a valid SendGrid API key in your `.env` file as `SENDGRID_API_KEY`
+2. The test sends to `darko.spoljaric@wearenotch.com`
+3. Check your inbox and spam folder after running the test
 
 **Import Pattern**: Tests use clean imports from the installed package:
 ```python

@@ -106,8 +106,8 @@ class TestPDFOfferCreation:
                 assert "alice@enterprise.com" in result
 
     @pytest.mark.asyncio
-    async def test_offer_bcc_recipients(self):
-        """Test that BCC recipients are included in email."""
+    async def test_offer_no_bcc_recipients(self):
+        """Test that BCC recipients are NOT included in email."""
         mock_response = AsyncMock()
         mock_response.status_code = 202
 
@@ -132,18 +132,9 @@ class TestPDFOfferCreation:
                 # Get the call arguments
                 call_args = mock_post.call_args
 
-                # Check JSON data includes BCC
+                # Check JSON data does NOT include BCC
                 json_data = call_args.kwargs["json"]
-                bcc_list = json_data["personalizations"][0]["bcc"]
-
-                assert len(bcc_list) == 2
-                assert any(
-                    bcc["email"] == "darko.spoljaric@wearenotch.com"
-                    for bcc in bcc_list
-                )
-                assert any(
-                    bcc["email"] == "sanja.buterin@wearenotch.com" for bcc in bcc_list
-                )
+                assert "bcc" not in json_data
 
     @pytest.mark.asyncio
     async def test_offer_pdf_attachment_structure(self):

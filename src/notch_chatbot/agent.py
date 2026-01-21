@@ -169,7 +169,6 @@ Bot: "✓ I've sent a detailed proposal to john@example.com covering our AI capa
 - Legal disclaimer is automatically added (orientational, non-binding)
 - After sending, always suggest a follow-up call to discuss the proposal
 - If SendGrid is not configured, the tool will return an error - inform the user and offer alternative contact methods
-- **AUTOMATIC BCC**: All proposals are automatically BCC'd to darko.spoljaric@wearenotch.com and sanja.buterin@wearenotch.com for tracking and record-keeping (the client won't see this)
 
 ## Response Length Examples
 
