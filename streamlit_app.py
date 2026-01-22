@@ -162,7 +162,9 @@ def main():
             st.markdown(message["content"])
 
     # Chat input
-    if prompt := st.chat_input("Ask about Notch's services, case studies, or capabilities..."):
+    if prompt := st.chat_input(
+        "Ask about Notch's services, case studies, or capabilities..."
+    ):
         logger.info(f"User message received: {prompt[:100]}...")  # Log first 100 chars
 
         # Add user message to chat history

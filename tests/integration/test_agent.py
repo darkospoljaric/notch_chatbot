@@ -1,9 +1,10 @@
 #!/usr/bin/env python3
 """Quick test script for the Notch chatbot agent."""
 
-
 import os
+
 from dotenv import load_dotenv
+
 from notch_chatbot.agent import create_notch_agent
 from notch_chatbot.knowledge_base import load_knowledge_base
 
@@ -21,7 +22,9 @@ def main():
 
     print("Loading knowledge base...")
     kb = load_knowledge_base()
-    print(f"✓ Loaded {len(kb.services)} services, {len(kb.case_studies)} case studies\n")
+    print(
+        f"✓ Loaded {len(kb.services)} services, {len(kb.case_studies)} case studies\n"
+    )
 
     print("Creating agent...")
     agent = create_notch_agent(kb)

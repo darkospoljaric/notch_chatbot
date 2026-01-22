@@ -200,6 +200,7 @@ The system prompt and agent configuration are in `src/notch_chatbot/agent.py`.
 - **Streamlit**: Web UI framework
 - **httpx**: HTTP client for blog fetching
 - **uv**: Fast Python package manager
+- **ruff**: Fast Python linter and code formatter
 - **pytest**: Testing framework (dev)
 
 ## Testing
@@ -280,6 +281,23 @@ from notch_chatbot.knowledge_base import load_knowledge_base
 No `sys.path` manipulation needed - the package is installed via `uv sync`!
 
 See [tests/README.md](tests/README.md) for detailed testing documentation.
+
+## Linting and Formatting
+
+The project uses [Ruff](https://github.com/astral-sh/ruff) for linting and code formatting.
+
+```bash
+# Run linting check
+uv run ruff check .
+
+# Run linting and apply auto-fixes
+uv run ruff check . --fix
+
+# Run code formatting
+uv run ruff format .
+```
+
+Ruff configuration is maintained in `pyproject.toml`.
 
 ## License
 

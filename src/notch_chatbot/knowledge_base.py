@@ -31,25 +31,25 @@ def load_knowledge_base(data_dir: Path | str | None = None) -> KnowledgeBase:
 
     # Load services
     services_file = data_dir / "services.json"
-    with open(services_file, "r", encoding="utf-8") as f:
+    with open(services_file, encoding="utf-8") as f:
         services_data = json.load(f)
         services = [Service(**s) for s in services_data]
 
     # Load case studies
     case_studies_file = data_dir / "case_studies.json"
-    with open(case_studies_file, "r", encoding="utf-8") as f:
+    with open(case_studies_file, encoding="utf-8") as f:
         case_studies_data = json.load(f)
         case_studies = [CaseStudy(**cs) for cs in case_studies_data]
 
     # Load use cases
     use_cases_file = data_dir / "use_cases.json"
-    with open(use_cases_file, "r", encoding="utf-8") as f:
+    with open(use_cases_file, encoding="utf-8") as f:
         use_cases_data = json.load(f)
         use_cases = [UseCase(**uc) for uc in use_cases_data]
 
     # Load expertise domains
     expertise_file = data_dir / "expertise.json"
-    with open(expertise_file, "r", encoding="utf-8") as f:
+    with open(expertise_file, encoding="utf-8") as f:
         expertise_domains = json.load(f)
 
     return KnowledgeBase(

@@ -1,10 +1,10 @@
 #!/usr/bin/env python3
 """Full demo showing all chatbot features."""
 
-
 import asyncio
-import os
+
 from dotenv import load_dotenv
+
 from notch_chatbot.agent import create_notch_agent
 from notch_chatbot.knowledge_base import load_knowledge_base
 
@@ -19,7 +19,10 @@ async def main():
     # Realistic conversation showing all features
     conversation = [
         ("Brief response", "What do you do?"),
-        ("Memory + Brief", "Do you have experience in my industry?"),  # Vague, should ask
+        (
+            "Memory + Brief",
+            "Do you have experience in my industry?",
+        ),  # Vague, should ask
         ("Context memory", "Healthcare"),  # Should remember the question
         ("Tool usage", "Show me a pharma example"),  # Should find ArisGlobal
         ("Detail on request", "Tell me more about that project"),  # Should expand

@@ -1,10 +1,11 @@
 #!/usr/bin/env python3
 """Test that agent tools are working correctly."""
 
-
 import asyncio
 import os
+
 from dotenv import load_dotenv
+
 from notch_chatbot.agent import create_notch_agent
 from notch_chatbot.knowledge_base import load_knowledge_base
 
@@ -28,9 +29,9 @@ async def main():
     ]
 
     for query in test_cases:
-        print(f"\n{'='*60}")
+        print(f"\n{'=' * 60}")
         print(f"Query: {query}")
-        print("="*60)
+        print("=" * 60)
         print("Response: ", end="", flush=True)
 
         async with agent.run_stream(query, deps=kb) as response:

@@ -1,10 +1,10 @@
 #!/usr/bin/env python3
 """Test detailed responses when asked."""
 
-
 import asyncio
-import os
+
 from dotenv import load_dotenv
+
 from notch_chatbot.agent import create_notch_agent
 from notch_chatbot.knowledge_base import load_knowledge_base
 
@@ -24,9 +24,9 @@ async def main():
     ]
 
     for response_type, query in queries:
-        print(f"\n{'='*60}")
+        print(f"\n{'=' * 60}")
         print(f"[{response_type}] Q: {query}")
-        print("="*60)
+        print("=" * 60)
         print("A: ", end="", flush=True)
 
         async with agent.run_stream(query, deps=kb) as response:

@@ -1,10 +1,10 @@
 #!/usr/bin/env python3
 """Simple test showing conversation memory."""
 
-
 import asyncio
-import os
+
 from dotenv import load_dotenv
+
 from notch_chatbot.agent import create_notch_agent
 from notch_chatbot.knowledge_base import load_knowledge_base
 

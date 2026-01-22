@@ -9,7 +9,7 @@ def main():
     print("Loading knowledge base...")
     kb = load_knowledge_base()
 
-    print(f"\n✓ Successfully loaded knowledge base!")
+    print("\n✓ Successfully loaded knowledge base!")
     print(f"\nServices: {len(kb.services)}")
     for service in kb.services:
         print(f"  - {service.name} ({service.category.value})")

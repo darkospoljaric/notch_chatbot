@@ -36,9 +36,7 @@ class TestPDFOfferCreation:
         mock_response.status_code = 202
         mock_response.text = "Accepted"
 
-        with patch.dict(
-            os.environ, {"SENDGRID_API_KEY": "test_key_123"}, clear=False
-        ):
+        with patch.dict(os.environ, {"SENDGRID_API_KEY": "test_key_123"}, clear=False):
             with patch("httpx.AsyncClient") as mock_client:
                 mock_client.return_value.__aenter__.return_value.post.return_value = (
                     mock_response
@@ -61,9 +59,7 @@ class TestPDFOfferCreation:
         mock_response = AsyncMock()
         mock_response.status_code = 202
 
-        with patch.dict(
-            os.environ, {"SENDGRID_API_KEY": "test_key_456"}, clear=False
-        ):
+        with patch.dict(os.environ, {"SENDGRID_API_KEY": "test_key_456"}, clear=False):
             with patch("httpx.AsyncClient") as mock_client:
                 mock_client.return_value.__aenter__.return_value.post.return_value = (
                     mock_response
@@ -86,9 +82,7 @@ class TestPDFOfferCreation:
         mock_response = AsyncMock()
         mock_response.status_code = 202
 
-        with patch.dict(
-            os.environ, {"SENDGRID_API_KEY": "test_key_789"}, clear=False
-        ):
+        with patch.dict(os.environ, {"SENDGRID_API_KEY": "test_key_789"}, clear=False):
             with patch("httpx.AsyncClient") as mock_client:
                 mock_client.return_value.__aenter__.return_value.post.return_value = (
                     mock_response
@@ -111,9 +105,7 @@ class TestPDFOfferCreation:
         mock_response = AsyncMock()
         mock_response.status_code = 202
 
-        with patch.dict(
-            os.environ, {"SENDGRID_API_KEY": "test_key_bcc"}, clear=False
-        ):
+        with patch.dict(os.environ, {"SENDGRID_API_KEY": "test_key_bcc"}, clear=False):
             with patch("httpx.AsyncClient") as mock_client:
                 mock_post = AsyncMock(return_value=mock_response)
                 mock_client.return_value.__aenter__.return_value.post = mock_post
@@ -142,9 +134,7 @@ class TestPDFOfferCreation:
         mock_response = AsyncMock()
         mock_response.status_code = 202
 
-        with patch.dict(
-            os.environ, {"SENDGRID_API_KEY": "test_key_pdf"}, clear=False
-        ):
+        with patch.dict(os.environ, {"SENDGRID_API_KEY": "test_key_pdf"}, clear=False):
             with patch("httpx.AsyncClient") as mock_client:
                 mock_post = AsyncMock(return_value=mock_response)
                 mock_client.return_value.__aenter__.return_value.post = mock_post
@@ -217,9 +207,7 @@ class TestPDFOfferCreation:
         mock_response.status_code = 401
         mock_response.text = '{"errors":[{"message":"Invalid API key"}]}'
 
-        with patch.dict(
-            os.environ, {"SENDGRID_API_KEY": "invalid_key"}, clear=False
-        ):
+        with patch.dict(os.environ, {"SENDGRID_API_KEY": "invalid_key"}, clear=False):
             with patch("httpx.AsyncClient") as mock_client:
                 mock_client.return_value.__aenter__.return_value.post.return_value = (
                     mock_response

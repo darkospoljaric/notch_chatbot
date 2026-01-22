@@ -1,7 +1,6 @@
 """Data models for Notch chatbot knowledge base."""
 
 from enum import Enum
-from typing import Optional
 
 from pydantic import BaseModel, Field
 
@@ -53,15 +52,11 @@ class Service(BaseModel):
     name: str
     category: ServiceCategory
     description: str
-    short_description: str = Field(
-        ..., description="1-2 sentence summary for chat"
-    )
+    short_description: str = Field(..., description="1-2 sentence summary for chat")
     key_features: list[str]
     related_expertise: list[ExpertiseDomain]
-    typical_timeline: Optional[str] = None
-    ideal_for: list[str] = Field(
-        default_factory=list, description="Client scenarios"
-    )
+    typical_timeline: str | None = None
+    ideal_for: list[str] = Field(default_factory=list, description="Client scenarios")
     url: str
 
 
@@ -77,11 +72,11 @@ class CaseStudy(BaseModel):
     )
     challenge: str
     solution: str
-    outcome: Optional[str] = None
+    outcome: str | None = None
     technologies: list[str] = Field(default_factory=list)
-    partnership_duration: Optional[str] = None
-    quote: Optional[str] = None
-    metrics: Optional[list[str]] = None
+    partnership_duration: str | None = None
+    quote: str | None = None
+    metrics: list[str] | None = None
     url: str
 
 
@@ -93,7 +88,7 @@ class UseCase(BaseModel):
     domain: ExpertiseDomain
     problem: str
     solution: str
-    metric: Optional[str] = None
+    metric: str | None = None
     related_services: list[str]
     url: str
 

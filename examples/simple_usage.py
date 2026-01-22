@@ -8,6 +8,7 @@ The package is installed via `uv sync`, making imports straightforward.
 
 import asyncio
 import os
+
 from dotenv import load_dotenv
 
 # Clean imports from the installed package
@@ -30,7 +31,9 @@ async def main():
     print("Loading knowledge base...")
     kb = load_knowledge_base()
     agent = create_notch_agent(kb)
-    print(f"✓ Loaded {len(kb.services)} services, {len(kb.case_studies)} case studies\n")
+    print(
+        f"✓ Loaded {len(kb.services)} services, {len(kb.case_studies)} case studies\n"
+    )
 
     # Example conversation with memory
     conversation_history = []

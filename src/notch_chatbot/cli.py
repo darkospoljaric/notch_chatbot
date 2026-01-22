@@ -2,6 +2,7 @@
 
 import asyncio
 import sys
+
 from dotenv import load_dotenv
 
 from .agent import create_notch_agent
@@ -29,9 +30,7 @@ async def async_main() -> None:
     print("=" * 60)
     print("Welcome to Notch Chatbot!")
     print("=" * 60)
-    print(
-        "\nI'm here to help you learn about Notch's software development services."
-    )
+    print("\nI'm here to help you learn about Notch's software development services.")
     print("Ask me about our capabilities, case studies, or how we can help you.\n")
     print('Type "exit" or press Ctrl+C to quit.\n')
 
@@ -40,13 +39,17 @@ async def async_main() -> None:
         try:
             # Get user input (running in executor to avoid blocking)
             loop = asyncio.get_event_loop()
-            user_input = await loop.run_in_executor(None, lambda: input("You: ").strip())
+            user_input = await loop.run_in_executor(
+                None, lambda: input("You: ").strip()
+            )
 
             if not user_input:
                 continue
 
             if user_input.lower() in ["exit", "quit", "bye"]:
-                print("\nThank you for chatting! Visit www.wearenotch.com for more information.")
+                print(
+                    "\nThank you for chatting! Visit www.wearenotch.com for more information."
+                )
                 break
 
             print("Notch: ", end="", flush=True)

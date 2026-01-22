@@ -234,7 +234,7 @@ async def fetch_latest_blog_posts(
             response.raise_for_status()
 
             # Simple extraction - in production you'd want proper HTML parsing
-            content = response.text
+            # response.text contains the HTML content
 
             # Return a note that this is available
             return (
@@ -424,7 +424,9 @@ def _generate_proposal_pdf(
     return pdf_base64
 
 
-def _format_proposal_email(client_name: str, client_email: str, pdf_base64: str) -> dict:
+def _format_proposal_email(
+    client_name: str, client_email: str, pdf_base64: str
+) -> dict:
     """Format the email data for SendGrid."""
     return {
         "personalizations": [
@@ -522,4 +524,6 @@ async def _send_email_via_sendgrid(
                 f"SendGrid error - Status {response.status_code}: {response.text}"
             )
             logger.error(error_msg)
-            return f"Error sending email: Status {response.status_code} - {response.text}"
+            return (
+                f"Error sending email: Status {response.status_code} - {response.text}"
+            )
