@@ -1,15 +1,14 @@
 """Tools for the Notch chatbot agent."""
 
-import base64
 import logging
-import os
-from datetime import datetime
+from typing import Annotated
 
 import httpx
-from fpdf import FPDF
 from pydantic_ai import RunContext
 
+from .adapters.email_adapter import EmailServiceAdapter
 from .models import CaseStudy, KnowledgeBase, Service, UseCase
+from .services.proposal_service import ProposalGenerator
 
 # Configure logging
 logger = logging.getLogger(__name__)
@@ -245,285 +244,71 @@ async def fetch_latest_blog_posts(
         return f"Unable to fetch blog posts at this time. Visit https://www.wearenotch.com/resources/blog for latest content. Error: {str(e)}"
 
 
-async def create_and_send_offer(
-    client_name: str,
-    client_email: str,
-    project_description: str,
-    services_list: str,
-    project_scope: str = "medium",
-) -> str:
-    """Create a PDF offer/proposal and send it via email to the prospect.
+def create_offer_tool(
+    email_adapter: EmailServiceAdapter,
+    proposal_generator: ProposalGenerator,
+):
+    """Factory function creating offer tool with injected dependencies.
 
     Args:
-        client_name: Name of the client/prospect
-        client_email: Email address of the client
-        project_description: Description of the project based on conversation
-        services_list: Comma-separated list of relevant Notch services
-        project_scope: Project size - "small", "medium", or "large" (affects pricing)
+        email_adapter: Email service adapter
+        proposal_generator: Proposal PDF generator
 
     Returns:
-        Success or error message
+        Configured create_and_send_offer tool function
     """
-    logger.info(
-        f"Starting offer creation for {client_name} ({client_email}), scope: {project_scope}"
-    )
 
-    try:
-        # Create PDF
-        pdf_base64 = _generate_proposal_pdf(
-            client_name, client_email, project_description, services_list, project_scope
+    async def create_and_send_offer(
+        client_name: Annotated[str, "Client's full name"],
+        client_email: Annotated[str, "Client's email address"],
+        project_description: Annotated[
+            str, "Brief description of the project (2-4 sentences)"
+        ],
+        services_list: Annotated[
+            str,
+            "Comma-separated list of relevant Notch services (e.g., 'Custom Software Development, AI Engineering')",
+        ],
+        project_scope: Annotated[
+            str,
+            "Project scope: 'small' (simple apps, MVPs), 'medium' (standard B2B platforms), or 'large' (enterprise systems)",
+        ] = "medium",
+    ) -> str:
+        """Create a proposal PDF and email it to the prospective client.
+
+        This tool automatically generates a professional proposal document with pricing
+        estimates and emails it to the client. Use when the client has expressed interest
+        in receiving a detailed proposal.
+        """
+        logger.info(
+            f"Starting offer creation for {client_name} ({client_email}), scope: {project_scope}"
         )
 
-        # Prepare email data
-        email_data = _format_proposal_email(client_name, client_email, pdf_base64)
-
-        # Send email
-        return await _send_email_via_sendgrid(email_data, client_email, client_name)
-
-    except Exception as e:
-        logger.exception(f"Exception while creating/sending offer: {e}")
-        return f"Error sending offer email: {str(e)}"
-
-
-def _generate_proposal_pdf(
-    client_name: str,
-    client_email: str,
-    project_description: str,
-    services_list: str,
-    project_scope: str,
-) -> str:
-    """Generate a PDF proposal and return it as a base64 string."""
-    logger.info("Generating PDF proposal...")
-    pdf = FPDF()
-    pdf.add_page()
-    pdf.set_auto_page_break(auto=True, margin=15)
-
-    # Header with Notch branding
-    pdf.set_font("Arial", "B", 24)
-    pdf.set_text_color(0, 102, 204)  # Blue color for branding
-    pdf.cell(0, 10, "NOTCH", ln=True, align="C")
-    pdf.set_font("Arial", "I", 10)
-    pdf.set_text_color(100, 100, 100)
-    pdf.cell(0, 5, "Software Development & AI Solutions", ln=True, align="C")
-    pdf.ln(10)
-
-    # Date
-    pdf.set_font("Arial", "", 10)
-    pdf.set_text_color(0, 0, 0)
-    pdf.cell(0, 5, f"Date: {datetime.now().strftime('%B %d, %Y')}", ln=True)
-    pdf.ln(5)
-
-    # Client information
-    pdf.set_font("Arial", "B", 12)
-    pdf.cell(0, 7, "Proposal For:", ln=True)
-    pdf.set_font("Arial", "", 11)
-    pdf.cell(0, 6, f"{client_name}", ln=True)
-    pdf.cell(0, 6, f"{client_email}", ln=True)
-    pdf.ln(10)
-
-    # Project overview
-    pdf.set_font("Arial", "B", 14)
-    pdf.set_text_color(0, 102, 204)
-    pdf.cell(0, 8, "Project Overview", ln=True)
-    pdf.set_text_color(0, 0, 0)
-    pdf.set_font("Arial", "", 11)
-    pdf.multi_cell(0, 6, project_description)
-    pdf.ln(5)
-
-    # Recommended services
-    pdf.set_font("Arial", "B", 14)
-    pdf.set_text_color(0, 102, 204)
-    pdf.cell(0, 8, "Recommended Services", ln=True)
-    pdf.set_text_color(0, 0, 0)
-    pdf.set_font("Arial", "", 11)
-    pdf.multi_cell(0, 6, services_list)
-    pdf.ln(5)
-
-    # Team composition
-    pdf.set_font("Arial", "B", 14)
-    pdf.set_text_color(0, 102, 204)
-    pdf.cell(0, 8, "Team Composition", ln=True)
-    pdf.set_text_color(0, 0, 0)
-    pdf.set_font("Arial", "", 11)
-    pdf.multi_cell(
-        0,
-        6,
-        "Your project will be handled by a dedicated team including:\n"
-        "- Project Manager\n"
-        "- Senior Software Engineers\n"
-        "- UI/UX Designer\n"
-        "- QA Specialist\n"
-        "- DevOps Engineer (as needed)",
-    )
-    pdf.ln(5)
-
-    # Pricing estimate
-    pdf.set_font("Arial", "B", 14)
-    pdf.set_text_color(0, 102, 204)
-    pdf.cell(0, 8, "Investment Estimate", ln=True)
-    pdf.set_text_color(0, 0, 0)
-    pdf.set_font("Arial", "", 11)
-
-    # Determine pricing based on scope
-    pricing_info = {
-        "small": "Starting from $15,000 - $35,000",
-        "medium": "Typical range: $35,000 - $100,000 depending on scope",
-        "large": "Starting from $100,000+ depending on requirements",
-    }
-
-    pricing_text = pricing_info.get(project_scope.lower(), pricing_info["medium"])
-    pdf.multi_cell(
-        0,
-        6,
-        f"{pricing_text}\n\n"
-        "Final pricing will be determined based on detailed requirements, "
-        "timeline, and project complexity. We'll provide a detailed breakdown "
-        "after our initial consultation call.",
-    )
-    pdf.ln(5)
-
-    # Next steps
-    pdf.set_font("Arial", "B", 14)
-    pdf.set_text_color(0, 102, 204)
-    pdf.cell(0, 8, "Next Steps", ln=True)
-    pdf.set_text_color(0, 0, 0)
-    pdf.set_font("Arial", "", 11)
-    pdf.multi_cell(
-        0,
-        6,
-        "1. Review this proposal\n"
-        "2. Schedule a consultation call to discuss details\n"
-        "3. Receive detailed project plan and final quote\n"
-        "4. Project kickoff and development",
-    )
-    pdf.ln(10)
-
-    # Disclaimer
-    pdf.set_font("Arial", "I", 9)
-    pdf.set_text_color(100, 100, 100)
-    pdf.multi_cell(
-        0,
-        5,
-        "IMPORTANT: This proposal is for orientational purposes only and does not "
-        "constitute a binding offer. Final terms, pricing, and deliverables will be "
-        "confirmed in a formal contract following detailed requirements analysis.",
-    )
-    pdf.ln(5)
-
-    # Footer
-    pdf.set_y(-30)
-    pdf.set_font("Arial", "", 9)
-    pdf.set_text_color(100, 100, 100)
-    pdf.cell(0, 5, "Notch Software Development", ln=True, align="C")
-    pdf.cell(0, 5, "www.wearenotch.com", ln=True, align="C")
-
-    # Get PDF as bytes (output returns bytes/bytearray directly)
-    pdf_bytes = pdf.output(dest="S")
-    pdf_base64 = base64.b64encode(pdf_bytes).decode("utf-8")
-    logger.info(f"PDF generated successfully ({len(pdf_base64)} bytes base64)")
-    return pdf_base64
-
-
-def _format_proposal_email(
-    client_name: str, client_email: str, pdf_base64: str
-) -> dict:
-    """Format the email data for SendGrid."""
-    return {
-        "personalizations": [
-            {
-                "to": [{"email": client_email, "name": client_name}],
-                "subject": f"Your Project Proposal from Notch - {datetime.now().strftime('%B %Y')}",
-            }
-        ],
-        "from": {
-            "email": "proposals@wearenotch.com",
-            "name": "Notch Team",
-        },
-        "content": [
-            {
-                "type": "text/html",
-                "value": f"""
-                <html>
-                    <body style="font-family: Arial, sans-serif; line-height: 1.6; color: #333;">
-                        <h2 style="color: #0066cc;">Hello {client_name},</h2>
-
-                        <p>Thank you for your interest in working with Notch! We're excited about the opportunity to help bring your project to life.</p>
-
-                        <p>Attached to this email, you'll find a detailed proposal outlining:</p>
-                        <ul>
-                            <li>Project overview and our understanding of your needs</li>
-                            <li>Recommended services and approach</li>
-                            <li>Team composition</li>
-                            <li>Investment estimate</li>
-                            <li>Next steps</li>
-                        </ul>
-
-                        <p>Please review the proposal at your convenience. We'd be happy to schedule a call to discuss any questions you might have and dive deeper into the details.</p>
-
-                        <p>Looking forward to hearing from you!</p>
-
-                        <p style="margin-top: 30px;">
-                            <strong>Best regards,</strong><br>
-                            The Notch Team<br>
-                            <a href="https://www.wearenotch.com" style="color: #0066cc;">www.wearenotch.com</a>
-                        </p>
-                    </body>
-                </html>
-                """,
-            }
-        ],
-        "attachments": [
-            {
-                "content": pdf_base64,
-                "filename": f"Notch_Proposal_{client_name.replace(' ', '_')}_{datetime.now().strftime('%Y%m%d')}.pdf",
-                "type": "application/pdf",
-                "disposition": "attachment",
-            }
-        ],
-    }
-
-
-async def _send_email_via_sendgrid(
-    email_data: dict, client_email: str, client_name: str
-) -> str:
-    """Send the email using SendGrid API."""
-    sendgrid_api_key = os.getenv("SENDGRID_API_KEY")
-
-    if not sendgrid_api_key:
-        error_msg = "SENDGRID_API_KEY not configured"
-        logger.error(error_msg)
-        return (
-            "Error: SENDGRID_API_KEY not configured. Please set up SendGrid API key "
-            "in environment variables. Get one at https://sendgrid.com (free tier: 100 emails/day)"
-        )
-
-    # SendGrid API endpoint
-    url = "https://api.sendgrid.com/v3/mail/send"
-
-    # Send email via SendGrid
-    logger.info(f"Sending email to {client_email} via SendGrid...")
-
-    async with httpx.AsyncClient() as client:
-        response = await client.post(
-            url,
-            json=email_data,
-            headers={
-                "Authorization": f"Bearer {sendgrid_api_key}",
-                "Content-Type": "application/json",
-            },
-            timeout=30.0,
-        )
-
-        if response.status_code == 202:
-            logger.info(
-                f"✓ Email sent successfully to {client_email} from proposals@wearenotch.com (Status: {response.status_code})"
+        try:
+            # Generate PDF
+            pdf_content = proposal_generator.generate(
+                client_name=client_name,
+                project_description=project_description,
+                services_list=services_list,
+                project_scope=project_scope,
             )
-            return f"✓ Offer sent successfully to {client_email}! {client_name} should receive it shortly."
-        else:
-            error_msg = (
-                f"SendGrid error - Status {response.status_code}: {response.text}"
+
+            # Send email
+            success, message = await email_adapter.send_proposal(
+                client_name=client_name,
+                client_email=client_email,
+                pdf_content=pdf_content,
+                project_summary=project_description,
             )
-            logger.error(error_msg)
-            return (
-                f"Error sending email: Status {response.status_code} - {response.text}"
-            )
+
+            if success:
+                logger.info(f"✓ Offer sent successfully to {client_email}")
+                return f"✓ Offer sent successfully to {client_email}! {client_name} should receive it shortly."
+            else:
+                logger.error(f"Failed to send offer: {message}")
+                return f"Error sending offer: {message}"
+
+        except Exception as e:
+            logger.exception(f"Exception while creating/sending offer: {e}")
+            return f"Error creating or sending offer: {str(e)}"
+
+    return create_and_send_offer

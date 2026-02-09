@@ -9,12 +9,23 @@ from notch_chatbot.agent import create_notch_agent
 from notch_chatbot.knowledge_base import load_knowledge_base
 
 
+class MockEmailAdapter:
+    """Mock email adapter for demo tests."""
+
+    async def send_proposal(
+        self, client_name: str, client_email: str, pdf_content: bytes, project_summary: str
+    ) -> tuple[bool, str]:
+        """Mock send - just returns success without sending."""
+        return True, f"[DEMO MODE] Would send proposal to {client_email}"
+
+
 async def main():
     """Demonstrate all chatbot features."""
     load_dotenv()
 
     kb = load_knowledge_base()
-    agent = create_notch_agent(kb)
+    email_adapter = MockEmailAdapter()
+    agent = create_notch_agent(email_adapter)
 
     # Realistic conversation showing all features
     conversation = [

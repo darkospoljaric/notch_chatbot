@@ -8,8 +8,10 @@ import sys
 import streamlit as st
 from dotenv import load_dotenv
 
+from src.notch_chatbot.adapters.email_adapter import EmailServiceAdapter
 from src.notch_chatbot.agent import create_notch_agent
 from src.notch_chatbot.knowledge_base import load_knowledge_base
+from src.notch_chatbot.services.email_strategy import SendGridEmailService
 
 # Configure logging to show in terminal
 logging.basicConfig(
@@ -69,8 +71,25 @@ def load_chatbot():
         f"Knowledge base loaded: {len(kb.services)} services, {len(kb.case_studies)} case studies"
     )
 
+    # Get SendGrid API key
+    sendgrid_key = os.getenv("SENDGRID_API_KEY")
+    if not sendgrid_key and hasattr(st, "secrets"):
+        try:
+            sendgrid_key = st.secrets.get("SENDGRID_API_KEY")
+        except Exception:
+            pass
+
+    if not sendgrid_key:
+        logger.error("SENDGRID_API_KEY not found")
+        st.error("SENDGRID_API_KEY is required for email functionality")
+        st.stop()
+
+    logger.info("SendGrid API key found - email proposals enabled")
+    email_service = SendGridEmailService(sendgrid_key)
+    email_adapter = EmailServiceAdapter(email_service)
+
     logger.info("Creating Notch agent...")
-    agent = create_notch_agent(kb)
+    agent = create_notch_agent(email_adapter)
     logger.info("Agent created successfully")
 
     return agent, kb
@@ -130,15 +149,6 @@ def main():
 
     # Set API key in environment for the agent
     os.environ["OPENAI_API_KEY"] = api_key
-
-    # Check for SendGrid API key (optional)
-    sendgrid_key = os.getenv("SENDGRID_API_KEY")
-    if sendgrid_key:
-        logger.info("SendGrid API key found - email proposals enabled")
-    else:
-        logger.warning(
-            "SendGrid API key not found - email proposals disabled (this is optional)"
-        )
 
     # Load agent and knowledge base
     try:

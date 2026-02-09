@@ -2,9 +2,11 @@
 
 from pydantic_ai import Agent
 
+from .adapters.email_adapter import EmailServiceAdapter
 from .models import KnowledgeBase
+from .services.proposal_service import ProposalGenerator
 from .tools import (
-    create_and_send_offer,
+    create_offer_tool,
     fetch_latest_blog_posts,
     find_case_studies_by_industry,
     find_case_studies_by_service,
@@ -299,11 +301,12 @@ Remember: Be helpful first, consultative second, and never pushy. Build trust th
 **THE BREVITY RULE APPLIES TO EVERY SINGLE RESPONSE IN THE CONVERSATION - NOT JUST THE FIRST FEW MESSAGES.**"""
 
 
-def create_notch_agent(knowledge_base: KnowledgeBase) -> Agent:
+def create_notch_agent(email_adapter: EmailServiceAdapter) -> Agent:
     """Create and configure the Notch chatbot agent.
 
     Args:
         knowledge_base: Loaded knowledge base with services, case studies, etc.
+        email_adapter: Email service adapter for sending proposals
 
     Returns:
         Configured Pydantic AI agent
@@ -314,7 +317,7 @@ def create_notch_agent(knowledge_base: KnowledgeBase) -> Agent:
         system_prompt=SYSTEM_PROMPT,
     )
 
-    # Register all tools
+    # Register all search tools
     agent.tool(find_services_by_keyword)
     agent.tool(find_services_by_category)
     agent.tool(find_case_studies_by_industry)
@@ -326,6 +329,10 @@ def create_notch_agent(knowledge_base: KnowledgeBase) -> Agent:
     agent.tool(list_all_services)
     agent.tool(list_available_industries)
     agent.tool_plain(fetch_latest_blog_posts)
-    agent.tool_plain(create_and_send_offer)
+
+    # Register proposal tool with injected dependencies
+    proposal_generator = ProposalGenerator()
+    offer_tool = create_offer_tool(email_adapter, proposal_generator)
+    agent.tool_plain(offer_tool)
 
     return agent

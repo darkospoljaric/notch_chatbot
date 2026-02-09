@@ -6,8 +6,10 @@ import os
 
 from dotenv import load_dotenv
 
+from notch_chatbot.adapters.email_adapter import EmailServiceAdapter
 from notch_chatbot.agent import create_notch_agent
 from notch_chatbot.knowledge_base import load_knowledge_base
+from notch_chatbot.services.email_strategy import SendGridEmailService
 
 
 async def main():
@@ -23,7 +25,13 @@ async def main():
     print(f"✓ Loaded {len(kb.services)} services\n")
 
     print("Creating agent...")
-    agent = create_notch_agent(kb)
+
+    # Create email adapter
+    sendgrid_key = os.getenv("SENDGRID_API_KEY", "test_api_key")
+    email_service = SendGridEmailService(sendgrid_key)
+    email_adapter = EmailServiceAdapter(email_service)
+
+    agent = create_notch_agent(email_adapter)
     print("✓ Agent created\n")
 
     # Test streaming

@@ -18,7 +18,10 @@ from datetime import datetime
 import pytest
 from dotenv import load_dotenv
 
-from notch_chatbot.tools import create_and_send_offer
+from notch_chatbot.adapters.email_adapter import EmailServiceAdapter
+from notch_chatbot.services.email_strategy import SendGridEmailService
+from notch_chatbot.services.proposal_service import ProposalGenerator
+from notch_chatbot.tools import create_offer_tool
 
 # Load .env file before the test
 load_dotenv()
@@ -60,6 +63,13 @@ async def test_send_sample_email():
     print(f"API Key prefix: {api_key[:10]}...")
     print(f"Timestamp: {datetime.now().strftime('%Y-%m-%d %H:%M:%S')}")
     print(f"{'=' * 60}\n")
+
+    # Create dependencies
+    sendgrid_key = api_key
+    email_service = SendGridEmailService(sendgrid_key)
+    email_adapter = EmailServiceAdapter(email_service)
+    proposal_generator = ProposalGenerator()
+    create_and_send_offer = create_offer_tool(email_adapter, proposal_generator)
 
     result = await create_and_send_offer(
         client_name=test_client_name,
@@ -123,26 +133,3 @@ async def test_send_sample_email():
 
     print("✓ Test email sent successfully!")
     print("Check your inbox (and spam folder) for the test proposal.")
-
-
-@pytest.mark.integration
-@pytest.mark.email
-@pytest.mark.asyncio
-async def test_send_email_missing_api_key(monkeypatch):
-    """Test that proper error is returned when API key is missing.
-
-    This test doesn't actually send an email - it just verifies error handling.
-    """
-    # Remove the API key from environment
-    monkeypatch.delenv("SENDGRID_API_KEY", raising=False)
-
-    result = await create_and_send_offer(
-        client_name="Test Client",
-        client_email="test@example.com",
-        project_description="Test project",
-        services_list="Test services",
-        project_scope="small",
-    )
-
-    # Should return an error message about missing API key
-    assert "SENDGRID_API_KEY not configured" in result

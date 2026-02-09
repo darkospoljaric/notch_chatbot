@@ -1,12 +1,15 @@
 """CLI interface for the Notch chatbot."""
 
 import asyncio
+import os
 import sys
 
 from dotenv import load_dotenv
 
+from .adapters.email_adapter import EmailServiceAdapter
 from .agent import create_notch_agent
 from .knowledge_base import load_knowledge_base
+from .services.email_strategy import SendGridEmailService
 
 
 async def async_main() -> None:
@@ -20,8 +23,18 @@ async def async_main() -> None:
         file=sys.stderr,
     )
 
+    # Create email service
+    sendgrid_key = os.getenv("SENDGRID_API_KEY")
+    if not sendgrid_key:
+        print("Error: SENDGRID_API_KEY environment variable is required", file=sys.stderr)
+        sys.exit(1)
+
+    print("SendGrid API key found - email proposals enabled", file=sys.stderr)
+    email_service = SendGridEmailService(sendgrid_key)
+    email_adapter = EmailServiceAdapter(email_service)
+
     # Create agent
-    agent = create_notch_agent(kb)
+    agent = create_notch_agent(email_adapter)
 
     # Initialize conversation history
     message_history = []
