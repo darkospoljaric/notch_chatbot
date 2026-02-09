@@ -110,6 +110,63 @@ uv run ruff check . --fix
 uv run ruff format .
 ```
 
+### Import Pattern (CRITICAL)
+
+**NEVER use `sys.path` manipulation.** All imports MUST use the installed package:
+
+```python
+# ✓ CORRECT - Clean imports
+from notch_chatbot.agent import create_notch_agent
+from notch_chatbot.knowledge_base import load_knowledge_base
+
+# ✗ WRONG - Never do this
+import sys
+sys.path.insert(0, '../src')
+```
+
+The package is installed in editable mode via `uv sync`. All files (including examples, tests, and new scripts) can import directly from `notch_chatbot`.
+
+### Testing Pattern (MANDATORY)
+
+Use **targeted testing** for immediate feedback, then **comprehensive testing** before commit.
+
+#### Targeted Testing - Run Immediately After Changes:
+
+| Change Type | Test to Run | Purpose |
+|-------------|-------------|---------|
+| Created new .py file | `uv run python path/to/file.py` | Verify imports and syntax |
+| Modified `agent.py` or system prompt | `uv run python tests/integration/test_agent.py` | Verify agent behavior |
+| Modified `tools.py` | `uv run python tests/integration/test_tools.py` | Verify tool functionality |
+| Modified knowledge base JSON | `uv run python tests/unit/verify_kb.py` | Validate JSON structure |
+| Modified Streamlit UI | `uv run python tests/unit/test_streamlit_imports.py` | Verify imports work |
+| Added new tool | **Write test FIRST** in `tests/integration/test_tools.py` | TDD approach (required) |
+
+#### Pre-Commit Checklist (MUST COMPLETE):
+
+Before considering any change complete, you MUST:
+
+1. **Run full test suite:**
+   ```bash
+   ./run_tests.sh
+   ```
+
+2. **Verify linting:**
+   ```bash
+   uv run ruff check .
+   ```
+
+3. **Format code:**
+   ```bash
+   uv run ruff format .
+   ```
+
+4. **Manual verification** (if applicable):
+   - New examples: Run the script end-to-end
+   - UI changes: Test in Streamlit (`uv run streamlit run streamlit_app.py`)
+   - Agent changes: Have a real conversation in the UI
+
+**No changes should be committed without passing all tests.**
+
 ## Code Modification Guidelines
 
 ### When Modifying the Agent (`src/notch_chatbot/agent.py`)
@@ -136,12 +193,15 @@ The knowledge base consists of:
 
 ### When Adding New Tools (`src/notch_chatbot/tools.py`)
 
-1. Use Pydantic models for type safety
-2. Return structured data, not formatted strings
-3. Document tool purpose clearly in docstrings
-4. Register new tools in `create_notch_agent()` function
-5. Add corresponding unit tests in `tests/unit/`
-6. Add integration tests in `tests/integration/test_tools.py`
+**CRITICAL: Write tests FIRST (TDD approach is required)**
+
+1. **Write the test first** in `tests/integration/test_tools.py` with expected behavior
+2. Use Pydantic models for type safety
+3. Return structured data, not formatted strings
+4. Document tool purpose clearly in docstrings
+5. Register new tools in `create_notch_agent()` function
+6. Run `uv run python tests/integration/test_tools.py` to verify
+7. Add corresponding unit tests in `tests/unit/` if needed
 
 ### When Modifying the Streamlit UI (`streamlit_app.py`)
 
