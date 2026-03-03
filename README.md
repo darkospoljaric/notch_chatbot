@@ -299,6 +299,13 @@ uv run ruff format .
 
 Ruff configuration is maintained in `pyproject.toml`.
 
+## Contributors
+
+This project was developed with contributions from:
+
+- **Darko Spoljaric** - Lead Developer
+- **Claude AI** - AI-assisted development
+
 ## License
 
 Proprietary - Notch Software Development Agency

@@ -20,7 +20,7 @@ class EmailMessage:
 class SendGridEmailService:
     """SendGrid email service."""
 
-    def __init__(self, api_key: str, sender_email: str = "shpula@gmail.com"):
+    def __init__(self, api_key: str, sender_email: str = "proposals@wearenotch.com"):
         """Initialize SendGrid service.
 
         Args:
