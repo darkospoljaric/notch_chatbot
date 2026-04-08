@@ -7,7 +7,7 @@ import httpx
 from pydantic_ai import RunContext
 
 from .adapters.email_adapter import EmailServiceAdapter
-from .models import CaseStudy, KnowledgeBase, Service, UseCase
+from .models import AgentDeps, CaseStudy, Service, UseCase
 from .services.proposal_service import ProposalGenerator
 
 # Configure logging
@@ -15,7 +15,7 @@ logger = logging.getLogger(__name__)
 
 
 def find_services_by_keyword(
-    ctx: RunContext[KnowledgeBase], keywords: list[str]
+    ctx: RunContext[AgentDeps], keywords: list[str]
 ) -> list[Service]:
     """Find services matching given keywords.
 
@@ -28,7 +28,7 @@ def find_services_by_keyword(
     Returns:
         List of matching services
     """
-    kb = ctx.deps
+    kb = ctx.deps.kb
     matches = []
     keywords_lower = [k.lower() for k in keywords]
 
@@ -52,7 +52,7 @@ def find_services_by_keyword(
 
 
 def find_services_by_category(
-    ctx: RunContext[KnowledgeBase], category: str
+    ctx: RunContext[AgentDeps], category: str
 ) -> list[Service]:
     """Find all services in a specific category.
 
@@ -63,12 +63,12 @@ def find_services_by_category(
     Returns:
         List of services in the category
     """
-    kb = ctx.deps
+    kb = ctx.deps.kb
     return [s for s in kb.services if s.category.value == category.lower()]
 
 
 def find_case_studies_by_industry(
-    ctx: RunContext[KnowledgeBase], industry: str
+    ctx: RunContext[AgentDeps], industry: str
 ) -> list[CaseStudy]:
     """Find case studies for a specific industry.
 
@@ -79,7 +79,7 @@ def find_case_studies_by_industry(
     Returns:
         List of case studies in that industry
     """
-    kb = ctx.deps
+    kb = ctx.deps.kb
     industry_lower = industry.lower().replace(" ", "_")
 
     matches = []
@@ -91,7 +91,7 @@ def find_case_studies_by_industry(
 
 
 def find_case_studies_by_service(
-    ctx: RunContext[KnowledgeBase], service_id: str
+    ctx: RunContext[AgentDeps], service_id: str
 ) -> list[CaseStudy]:
     """Find case studies that used a specific service.
 
@@ -102,12 +102,12 @@ def find_case_studies_by_service(
     Returns:
         List of case studies using that service
     """
-    kb = ctx.deps
+    kb = ctx.deps.kb
     return [cs for cs in kb.case_studies if service_id in cs.services_used]
 
 
 def find_similar_case_studies(
-    ctx: RunContext[KnowledgeBase], keywords: list[str]
+    ctx: RunContext[AgentDeps], keywords: list[str]
 ) -> list[CaseStudy]:
     """Find case studies matching keywords in challenge, solution, or outcome.
 
@@ -118,7 +118,7 @@ def find_similar_case_studies(
     Returns:
         List of matching case studies
     """
-    kb = ctx.deps
+    kb = ctx.deps.kb
     matches = []
     keywords_lower = [k.lower() for k in keywords]
 
@@ -141,7 +141,7 @@ def find_similar_case_studies(
     return matches
 
 
-def get_all_case_studies(ctx: RunContext[KnowledgeBase]) -> list[CaseStudy]:
+def get_all_case_studies(ctx: RunContext[AgentDeps]) -> list[CaseStudy]:
     """Get all available case studies.
 
     Args:
@@ -150,12 +150,10 @@ def get_all_case_studies(ctx: RunContext[KnowledgeBase]) -> list[CaseStudy]:
     Returns:
         List of all case studies
     """
-    return ctx.deps.case_studies
+    return ctx.deps.kb.case_studies
 
 
-def find_use_cases_by_domain(
-    ctx: RunContext[KnowledgeBase], domain: str
-) -> list[UseCase]:
+def find_use_cases_by_domain(ctx: RunContext[AgentDeps], domain: str) -> list[UseCase]:
     """Find use cases for a specific expertise domain.
 
     Args:
@@ -165,15 +163,13 @@ def find_use_cases_by_domain(
     Returns:
         List of use cases in that domain
     """
-    kb = ctx.deps
+    kb = ctx.deps.kb
     domain_lower = domain.lower().replace(" ", "_")
 
     return [uc for uc in kb.use_cases if uc.domain.value == domain_lower]
 
 
-def get_expertise_description(
-    ctx: RunContext[KnowledgeBase], domain: str
-) -> str | None:
+def get_expertise_description(ctx: RunContext[AgentDeps], domain: str) -> str | None:
     """Get description for a specific expertise domain.
 
     Args:
@@ -183,11 +179,11 @@ def get_expertise_description(
     Returns:
         Description of the expertise domain or None if not found
     """
-    kb = ctx.deps
+    kb = ctx.deps.kb
     return kb.expertise_domains.get(domain)
 
 
-def list_all_services(ctx: RunContext[KnowledgeBase]) -> list[Service]:
+def list_all_services(ctx: RunContext[AgentDeps]) -> list[Service]:
     """List all available services.
 
     Args:
@@ -196,10 +192,10 @@ def list_all_services(ctx: RunContext[KnowledgeBase]) -> list[Service]:
     Returns:
         List of all services
     """
-    return ctx.deps.services
+    return ctx.deps.kb.services
 
 
-def list_available_industries(ctx: RunContext[KnowledgeBase]) -> list[str]:
+def list_available_industries(ctx: RunContext[AgentDeps]) -> list[str]:
     """List all industries we have case studies for.
 
     Args:
@@ -208,7 +204,7 @@ def list_available_industries(ctx: RunContext[KnowledgeBase]) -> list[str]:
     Returns:
         List of industry names
     """
-    return sorted({cs.industry.value for cs in ctx.deps.case_studies})
+    return sorted({cs.industry.value for cs in ctx.deps.kb.case_studies})
 
 
 async def fetch_latest_blog_posts(

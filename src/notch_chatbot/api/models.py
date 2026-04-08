@@ -88,3 +88,21 @@ class PongMessage(BaseModel):
     """Keepalive pong response."""
 
     type: Literal["pong"] = "pong"
+
+
+# Send Offer Models
+class SendOfferRequest(BaseModel):
+    """Request to generate and send a proposal PDF by email."""
+
+    client_name: str
+    client_email: str
+    project_description: str
+    services_list: str
+    project_scope: str = "medium"
+
+
+class SendOfferResponse(BaseModel):
+    """Response after sending a proposal."""
+
+    success: bool
+    message: str

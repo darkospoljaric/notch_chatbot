@@ -1,8 +1,13 @@
 """Data models for Notch chatbot knowledge base."""
 
+import logging
+from dataclasses import dataclass, field
 from enum import Enum
+from typing import Any
 
 from pydantic import BaseModel, Field
+
+logger = logging.getLogger(__name__)
 
 
 class ServiceCategory(str, Enum):
@@ -102,3 +107,27 @@ class KnowledgeBase(BaseModel):
     expertise_domains: dict[str, str] = Field(
         ..., description="Domain key to description mapping"
     )
+
+
+class OfferState(BaseModel):
+    """Shared coagent state synced bidirectionally with the frontend."""
+
+    offer_content: str | None = None
+    has_offer: bool = False
+    project_description: str | None = None
+    services_list: str | None = None
+    project_scope: str | None = None
+
+    def __setattr__(self, name: str, value: Any) -> None:
+        old_value = getattr(self, name, None)
+        super().__setattr__(name, value)
+        if old_value != value:
+            logger.info("[SharedState] %s changed: %r → %r", name, old_value, value)
+
+
+@dataclass
+class AgentDeps:
+    """Agent dependencies including knowledge base and shared coagent state."""
+
+    kb: KnowledgeBase
+    state: OfferState = field(default_factory=OfferState)

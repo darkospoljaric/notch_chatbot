@@ -9,6 +9,7 @@ from dotenv import load_dotenv
 from .adapters.email_adapter import EmailServiceAdapter
 from .agent import create_notch_agent
 from .knowledge_base import load_knowledge_base
+from .models import AgentDeps
 from .services.email_strategy import SendGridEmailService
 
 
@@ -26,7 +27,9 @@ async def async_main() -> None:
     # Create email service
     sendgrid_key = os.getenv("SENDGRID_API_KEY")
     if not sendgrid_key:
-        print("Error: SENDGRID_API_KEY environment variable is required", file=sys.stderr)
+        print(
+            "Error: SENDGRID_API_KEY environment variable is required", file=sys.stderr
+        )
         sys.exit(1)
 
     print("SendGrid API key found - email proposals enabled", file=sys.stderr)
@@ -69,7 +72,7 @@ async def async_main() -> None:
 
             # Run agent with streaming, passing conversation history
             async with agent.run_stream(
-                user_input, deps=kb, message_history=message_history
+                user_input, deps=AgentDeps(kb=kb), message_history=message_history
             ) as response:
                 async for chunk in response.stream_text(delta=True):
                     print(chunk, end="", flush=True)

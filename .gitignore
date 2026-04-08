@@ -18,3 +18,5 @@ wheels/
 .vscode/
 *.swp
 *.swo
+frontend/node_modules
+frontend/dist

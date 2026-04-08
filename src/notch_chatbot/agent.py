@@ -1,9 +1,9 @@
 """Main Notch chatbot agent implementation."""
 
-from pydantic_ai import Agent
+from pydantic_ai import Agent, RunContext
 
 from .adapters.email_adapter import EmailServiceAdapter
-from .models import KnowledgeBase
+from .models import AgentDeps
 from .services.proposal_service import ProposalGenerator
 from .tools import (
     create_offer_tool,
@@ -152,6 +152,23 @@ Your goal is to naturally guide conversations toward concrete next steps:
 - Frame as helpful/natural, not salesy
 - Get email address for proposals (needed for follow-up)
 - After suggesting a next step, keep responses brief while waiting for their decision
+
+## Offer Preview - FRONTEND TOOL (call proactively)
+
+When you have gathered enough information to construct a meaningful proposal preview, call the `preview_offer` **frontend action** (not a backend tool). You know enough when you have:
+- A clear project description (2–4 sentences, inferred from the conversation)
+- Relevant services identified (use `find_services_by_keyword` or `list_all_services` first)
+- A project scope estimate: "small", "medium", or "large"
+
+**Call `preview_offer` without waiting for the user to ask.** Pass these parameters:
+- `project_description`: 2–4 sentences summarising the project (string)
+- `services_list`: comma-separated service names (string)
+- `project_scope`: "small" | "medium" | "large" (string)
+
+Do **NOT** ask for the client's name or email before calling `preview_offer`. The user will review the draft in the editor and click "Send Offer" themselves when ready.
+
+After calling `preview_offer`, say something brief like:
+"I've prepared a draft proposal on the left — feel free to edit it. When you're ready to send it, click the Send button and enter your name and email."
 
 ## Creating and Sending Offers - AUTOMATED WORKFLOW
 
@@ -313,9 +330,21 @@ def create_notch_agent(email_adapter: EmailServiceAdapter) -> Agent:
     """
     agent = Agent(
         "openai:gpt-4o",
-        deps_type=KnowledgeBase,
+        deps_type=AgentDeps,
         system_prompt=SYSTEM_PROMPT,
     )
+
+    @agent.system_prompt
+    def offer_context(ctx: RunContext[AgentDeps]) -> str:
+        s = ctx.deps.state
+        if s.has_offer and s.offer_content:
+            return (
+                "\n\n## Current Offer in Editor\n"
+                "The following proposal is currently displayed to the user in the editor. "
+                "You can reference it when answering questions.\n\n"
+                f"{s.offer_content}"
+            )
+        return ""
 
     # Register all search tools
     agent.tool(find_services_by_keyword)

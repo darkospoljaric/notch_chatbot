@@ -8,11 +8,14 @@ from notch_chatbot.api.auth import verify_api_key
 from notch_chatbot.api.errors import APIError, ErrorCode
 from notch_chatbot.api.models import (
     HealthCheckResponse,
+    SendOfferRequest,
+    SendOfferResponse,
     SessionCreateRequest,
     SessionCreateResponse,
     SessionHistoryResponse,
 )
 from notch_chatbot.api.session_manager import SessionManager
+from notch_chatbot.services.proposal_service import ProposalGenerator
 
 router = APIRouter()
 
@@ -122,6 +125,31 @@ async def get_session_history(
     return SessionHistoryResponse(
         session_id=session_id, messages=messages, message_count=len(messages)
     )
+
+
+@router.post("/send-offer", response_model=SendOfferResponse)
+async def send_offer(body: SendOfferRequest, request: Request):
+    """
+    Generate a proposal PDF and send it via email.
+
+    Does not require authentication — called directly from the React frontend.
+    """
+    proposal_generator = ProposalGenerator()
+    pdf_content = proposal_generator.generate(
+        client_name=body.client_name,
+        project_description=body.project_description,
+        services_list=body.services_list,
+        project_scope=body.project_scope,
+    )
+    success, message = await request.app.state.email_adapter.send_proposal(
+        client_name=body.client_name,
+        client_email=body.client_email,
+        pdf_content=pdf_content,
+        project_summary=body.project_description,
+    )
+    if not success:
+        raise HTTPException(status_code=500, detail=message)
+    return SendOfferResponse(success=True, message=message)
 
 
 @router.delete(
